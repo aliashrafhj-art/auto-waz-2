@@ -1,0 +1,8 @@
+*.zip
+node_modules/
+temp/
+tokens.json
+config.json
+queue.json
+phonks.json
+assets/
