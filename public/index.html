@@ -5,112 +5,139 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Auto Waz 2.0</title>
 <style>
-:root{--bg:#07080f;--card:#0f1420;--border:#1a2035;--accent:#6c47ff;--accent2:#ff4785;--green:#00d4aa;--text:#e2e8f0;--muted:#4a5568;--warn:#f6ad55}
+:root{
+  --bg:#07080f;--card:#0d1117;--card2:#111827;--border:#1a2035;
+  --accent:#6c47ff;--accent2:#ff4785;--green:#00d4aa;
+  --text:#e2e8f0;--muted:#4a5568;--warn:#f6ad55;
+  --yt:#ff0000;--drive:#1a73e8;
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:72px;font-size:14px}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:76px}
+
 /* HEADER */
-.hdr{background:linear-gradient(135deg,#0d1117,#1a0a2e);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
-.hdr-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:grid;place-items:center;font-size:17px;flex-shrink:0}
-.hdr-info h1{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.3px}
-.hdr-info p{font-size:10px;color:var(--muted)}
+.hdr{background:linear-gradient(135deg,#0d1117 0%,#150a2e 100%);padding:13px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:200;backdrop-filter:blur(12px)}
+.hdr-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:grid;place-items:center;font-size:16px;flex-shrink:0}
+.hdr h1{font-size:16px;font-weight:700;color:#fff}
+.hdr p{font-size:10px;color:var(--muted)}
 .hdr-dots{margin-left:auto;display:flex;gap:10px}
-.conn-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
-.dot{width:7px;height:7px;border-radius:50%;background:#2d3748;transition:all .3s}
-.dot.on{background:var(--green);box-shadow:0 0 6px var(--green)}
-/* TABS */
+.ci{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:#2d3748;transition:.3s}
+.dot.on{background:var(--green);box-shadow:0 0 7px var(--green)}
+
+/* TABS & NAV */
 .tab{display:none}.tab.active{display:block}
-/* NAV */
-.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:100}
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:200}
 .nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 0;cursor:pointer;color:var(--muted);font-size:9px;border:none;background:none;transition:color .2s}
-.nb.active{color:var(--accent)}
-.nb .icon{font-size:18px}
+.nb.active{color:var(--accent)}.nb .ic{font-size:18px}
+
 /* CARD */
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;margin:10px 12px;padding:16px;transition:border-color .2s}
-.card-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
-/* FORM */
-.label{font-size:11px;color:var(--muted);margin:10px 0 4px}
-.inp{background:#0a0d15;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;width:100%;outline:none;transition:border-color .2s}
+.card{background:var(--card2);border:1px solid var(--border);border-radius:16px;margin:10px 12px;padding:16px}
+.ct{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+
+/* FORM ELEMENTS */
+.lbl{font-size:11px;color:var(--muted);margin:10px 0 4px}
+.inp{background:#080c14;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;width:100%;outline:none;transition:border-color .2s;font-family:inherit}
 .inp:focus{border-color:var(--accent)}
-textarea.inp{resize:vertical;min-height:80px;font-family:inherit}
-.sel{background:#0a0d15;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;width:100%;outline:none}
+textarea.inp{resize:vertical;min-height:80px}
+.sel{background:#080c14;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;width:100%;outline:none}
+
 /* BUTTONS */
 .btn{padding:11px 16px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
-.btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-primary{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;width:100%;padding:13px;font-size:14px;border-radius:12px;margin-top:8px;font-weight:700;letter-spacing:.2px}
-.btn-primary:hover:not(:disabled){filter:brightness(1.1)}
-.btn-yt{background:#ff0000;color:#fff;flex:1}
-.btn-drive{background:#1a73e8;color:#fff;flex:1}
-.btn-sm{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none}
-.btn-danger{background:#2d1515;color:#fc8181;border:1px solid #3d2020}
-.btn-green{background:#0d2d1f;color:var(--green);border:1px solid #0f4a30}
-.btn-add{background:#1a2035;color:var(--accent);border:1px solid #2a3050}
+.btn:active{transform:scale(.97)}.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;width:100%;padding:13px;font-size:14px;border-radius:12px;font-weight:700;border:none;cursor:pointer;margin-top:8px;transition:filter .2s}
+.btn-primary:active:not(:disabled){filter:brightness(.9)}
+.btn-yt{background:var(--yt);color:#fff;flex:1}
+.btn-drive{background:var(--drive);color:#fff;flex:1}
+.btn-green{background:#0a2018;color:var(--green);border:1px solid #0d4a2a;padding:9px 14px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:.2s}
+.btn-green{border:1px solid #0d4a2a}
+.btn-danger{background:#2a1010;color:#fc8181;border:1px solid #4a2020;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.btn-add{background:var(--border);color:var(--accent);border:1px solid #2a3050;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
 .btn-row{display:flex;gap:8px;margin-bottom:8px}
+
 /* TOGGLE */
-.trow{display:flex;justify-content:space-between;align-items:center}
+.tr{display:flex;justify-content:space-between;align-items:center}
 .tl{font-size:15px;font-weight:600;color:#fff}
 .ts{font-size:11px;color:var(--muted);margin-top:2px}
 .tog{position:relative;width:50px;height:26px;flex-shrink:0}
 .tog input{opacity:0;width:0;height:0}
-.tslider{position:absolute;inset:0;background:#2d3748;border-radius:26px;cursor:pointer;transition:.3s}
-.tslider:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#4a5568;border-radius:50%;transition:.3s}
-input:checked+.tslider{background:var(--accent)}
-input:checked+.tslider:before{transform:translateX(24px);background:#fff}
-/* SMALL TOGGLE */
+.tsl{position:absolute;inset:0;background:#2d3748;border-radius:26px;cursor:pointer;transition:.3s}
+.tsl:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#4a5568;border-radius:50%;transition:.3s}
+input:checked+.tsl{background:var(--accent)}
+input:checked+.tsl:before{transform:translateX(24px);background:#fff}
 .stog{position:relative;width:40px;height:22px;flex-shrink:0}
 .stog input{opacity:0;width:0;height:0}
-.sslider{position:absolute;inset:0;background:#2d3748;border-radius:22px;cursor:pointer;transition:.3s}
-.sslider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#4a5568;border-radius:50%;transition:.3s}
-input:checked+.sslider{background:var(--accent)}
-input:checked+.sslider:before{transform:translateX(18px);background:#fff}
-/* SLIDER */
-.range-row{display:flex;align-items:center;gap:10px;margin-top:6px}
-.range-label{font-size:12px;color:var(--muted);min-width:40px;text-align:right}
+.ssl{position:absolute;inset:0;background:#2d3748;border-radius:22px;cursor:pointer;transition:.3s}
+.ssl:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#4a5568;border-radius:50%;transition:.3s}
+input:checked+.ssl{background:var(--accent)}
+input:checked+.ssl:before{transform:translateX(18px);background:#fff}
+
+/* RANGE */
+.rrow{display:flex;align-items:center;gap:8px;margin-top:6px}
+.rlb{font-size:11px;color:var(--muted);min-width:24px;text-align:center}
 input[type=range]{flex:1;accent-color:var(--accent);height:4px}
-.range-val{font-size:12px;color:var(--accent);min-width:32px;font-weight:700}
+.rval{font-size:12px;color:var(--accent);min-width:28px;font-weight:700;text-align:center}
+
 /* PROGRESS */
-.progress-bar{height:6px;background:#1a2035;border-radius:6px;overflow:hidden;margin:8px 0}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:6px;transition:width .5s}
-/* BADGE */
+.pbar{height:6px;background:var(--border);border-radius:6px;overflow:hidden;margin:8px 0}
+.pfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:6px;transition:width .5s}
+
+/* BADGE / CHIP / HINT */
 .badge{background:var(--border);color:var(--accent);font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.chip-ok{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:#0a2018;color:var(--green);border:1px solid #0d4a2a}
+.chip-err{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;background:#2a1010;color:#fc8181;border:1px solid #4a2020}
 .hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+
 /* SLOT ITEM */
-.slot-item{display:flex;align-items:center;gap:8px;background:#0a0d15;border-radius:8px;padding:8px 12px;margin-bottom:6px;border:1px solid var(--border)}
-.slot-time{font-size:15px;font-weight:700;color:var(--accent);min-width:58px}
+.sitem{display:flex;align-items:center;gap:8px;background:#080c14;border-radius:8px;padding:8px 12px;margin-bottom:6px;border:1px solid var(--border)}
+.stime{font-size:15px;font-weight:700;color:var(--accent);min-width:58px}
+
 /* DAY CARD */
-.day-card{background:#0a0d15;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;transition:border-color .2s}
-.day-card.today{border-color:var(--accent)}
-.day-hdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
-.day-name{font-size:13px;font-weight:700;color:#c4b5fd}
-.day-body{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
-.day-body.open{display:block}
+.dcard{background:#080c14;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;transition:border-color .2s}
+.dcard.today{border-color:var(--accent)}
+.dhdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.dname{font-size:13px;font-weight:700;color:#c4b5fd}
+.dbody{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.dbody.open{display:block}
 .chev{transition:transform .2s;color:var(--muted);font-size:11px}
 .chev.open{transform:rotate(180deg)}
-/* TARGET SELECTOR */
-.targets{display:flex;gap:6px;margin-bottom:10px}
-.tgt{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:#0a0d15;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s}
-.tgt.active{background:#1a0a2e;border-color:var(--accent);color:#c4b5fd}
-/* LOG */
-.log-box{background:#050810;border:1px solid var(--border);border-radius:10px;padding:8px;max-height:220px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;color:#4ade80}
-.log-line{border-bottom:1px solid #0a0d15;padding:2px 0;line-height:1.6;word-break:break-all}
-.log-err{color:#fc8181}
+
+/* SEGMENT CONTROL */
+.seg{display:flex;gap:6px;margin-bottom:10px}
+.segs{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:#080c14;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s}
+.segs.on{background:#130a28;border-color:var(--accent);color:#c4b5fd}
+
+/* GRADE GRID */
+.ggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.gbtn{padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:#080c14;color:var(--muted);font-size:11px;cursor:pointer;text-align:center;transition:all .2s}
+.gbtn.on{border-color:var(--accent);color:var(--accent);background:#100a2e}
+
 /* PHONK ITEM */
-.phonk-item{display:flex;align-items:center;gap:10px;background:#0a0d15;border-radius:10px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border)}
-.phonk-info{flex:1}
-.phonk-name{font-size:13px;color:#c4b5fd;font-weight:700}
-.phonk-meta{font-size:11px;color:var(--muted);margin-top:2px}
-/* COLOR GRADE */
-.grade-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
-.grade-btn{padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:#0a0d15;color:var(--muted);font-size:11px;cursor:pointer;text-align:center;transition:all .2s}
-.grade-btn.active{border-color:var(--accent);color:var(--accent);background:#100a2e}
-/* SKULL PREVIEW */
-.skull-preview{width:80px;height:80px;border-radius:12px;border:2px dashed var(--border);display:grid;place-items:center;font-size:32px;cursor:pointer;transition:border-color .2s}
-.skull-preview:hover{border-color:var(--accent)}
-.skull-preview img{width:100%;height:100%;object-fit:contain;border-radius:10px}
-/* STATUS CHIP */
-.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
-.chip-run{background:#0a2010;color:var(--green);border:1px solid #0f4a30}
-.chip-err{background:#2d1515;color:#fc8181;border:1px solid #3d2020}
-.chip-ok {background:#0a2010;color:var(--green);border:1px solid #0f4a30}
+.phitem{display:flex;align-items:center;gap:10px;background:#080c14;border-radius:10px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border)}
+.phname{font-size:13px;color:#c4b5fd;font-weight:700}
+.phmeta{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* SKULL */
+.skull-zone{width:80px;height:80px;border-radius:12px;border:2px dashed var(--border);display:grid;place-items:center;font-size:32px;cursor:pointer;transition:border-color .2s;flex-shrink:0}
+.skull-zone:hover{border-color:var(--accent)}
+.skull-zone img{width:100%;height:100%;object-fit:contain;border-radius:10px}
+
+/* UPLOAD ZONE */
+.upzone{background:#080c14;border:2px dashed var(--border);border-radius:12px;padding:20px;text-align:center;cursor:pointer;transition:border-color .2s;margin-bottom:10px}
+.upzone:hover{border-color:var(--accent)}
+.upzone input{display:none}
+
+/* LOG BOX */
+.logbox{background:#050810;border:1px solid var(--border);border-radius:10px;padding:8px;max-height:220px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;color:#4ade80}
+.lline{border-bottom:1px solid #0a0d15;padding:2px 0;line-height:1.6;word-break:break-all}
+.lerr{color:#fc8181}
+
+/* PREVIEW MODAL */
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:999;flex-direction:column;align-items:center;justify-content:center;padding:16px}
+.modal.open{display:flex}
+
+/* ANIMATIONS */
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.pulsing{animation:pulse 1.5s infinite}
 </style>
 </head>
 <body>
@@ -118,24 +145,25 @@ input[type=range]{flex:1;accent-color:var(--accent);height:4px}
 <!-- HEADER -->
 <div class="hdr">
   <div class="hdr-logo">▶</div>
-  <div class="hdr-info"><h1>Auto Waz 2.0</h1><p>Video Automation Tool</p></div>
+  <div><h1>Auto Waz 2.0</h1><p>Video Automation Tool</p></div>
   <div class="hdr-dots">
-    <div class="conn-item"><span class="dot" id="dDot"></span><span id="dLbl">Drive</span></div>
-    <div class="conn-item"><span class="dot" id="yDot"></span><span id="yLbl">YT</span></div>
+    <div class="ci"><span class="dot" id="dDot"></span><span>Drive</span></div>
+    <div class="ci"><span class="dot" id="yDot"></span><span id="yLbl">YT</span></div>
   </div>
 </div>
 
-<!-- ============ TAB: HOME ============ -->
+<!-- ════════════════ TAB: HOME ════════════════ -->
 <div class="tab active" id="tab-home">
+
   <div class="card">
-    <div class="trow">
+    <div class="tr">
       <div><div class="tl">⏰ Auto Scheduler</div><div class="ts" id="schedSub">বন্ধ আছে</div></div>
-      <label class="tog"><input type="checkbox" id="mainToggle" onchange="onMainToggle()"><span class="tslider"></span></label>
+      <label class="tog"><input type="checkbox" id="schedToggle" onchange="onSched()"><span class="tsl"></span></label>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">🔗 সংযোগ</div>
+    <div class="ct">🔗 সংযোগ</div>
     <div class="btn-row">
       <button class="btn btn-yt" onclick="connectYT()">▶ YouTube</button>
       <button class="btn btn-drive" onclick="connectDrive()">📁 Drive</button>
@@ -144,8 +172,8 @@ input[type=range]{flex:1;accent-color:var(--accent);height:4px}
   </div>
 
   <div class="card">
-    <div class="card-title">⚙️ সেটিং</div>
-    <div class="label">Privacy</div>
+    <div class="ct">⚙️ সেটিং</div>
+    <div class="lbl">Privacy</div>
     <select class="sel" id="privacySel" onchange="onPrivacy()">
       <option value="public">🌍 Public</option>
       <option value="private">🔒 Private</option>
@@ -154,142 +182,49 @@ input[type=range]{flex:1;accent-color:var(--accent);height:4px}
   </div>
 
   <div class="card">
-    <div class="card-title">⏱ Time Slots <span class="badge" id="slotBadge">0</span></div>
+    <div class="ct">⏱ Time Slots <span class="badge" id="slotBadge">0</span></div>
     <div id="slotList"></div>
-    <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+    <div style="display:flex;gap:8px;align-items:center;margin-top:6px">
       <input type="time" class="inp" id="newTime" value="09:00" style="flex:1">
-      <button class="btn-sm btn-add" onclick="addSlot()">+ যোগ করুন</button>
+      <button class="btn-add" onclick="addSlot()">+ যোগ করুন</button>
     </div>
     <div class="hint">সময় — বাংলাদেশ (UTC+6)</div>
   </div>
 
   <div class="card">
-    <div class="card-title">🚀 এখনই চালাও</div>
-    <div class="label">Folder ID</div>
-    <input class="inp" id="nowFolder" placeholder="Drive Folder ID...">
-    <div class="label">Template (ঐচ্ছিক)</div>
+    <div class="ct">🚀 এখনই Upload করো</div>
+    <div class="lbl">Drive Folder ID</div>
+    <input class="inp" id="nowFolder" placeholder="1mTQV...">
+    <div class="lbl">Template ({{name}} = ফাইলের নাম)</div>
     <input class="inp" id="nowTemplate" placeholder="#shorts #viral">
-    <button class="btn btn-primary" onclick="runNow()" id="runBtn">🚀 Upload শুরু করো</button>
+    <button class="btn-primary" onclick="runNow()" id="runBtn">🚀 Upload শুরু করো</button>
   </div>
+
 </div>
 
-<!-- ============ TAB: DAYS ============ -->
+<!-- ════════════════ TAB: DAYS ════════════════ -->
 <div class="tab" id="tab-days">
   <div class="card">
-    <div class="card-title">📅 প্রতিদিনের Folder</div>
+    <div class="ct">📅 প্রতিদিনের Folder</div>
     <div id="dayGrid"></div>
   </div>
 </div>
 
-<!-- ============ TAB: MOVIE ============ -->
-<div class="tab" id="tab-movie">
-  <div class="card">
-    <div class="card-title">🎬 Movie Slicer</div>
-
-    <!-- Movie source selector -->
-    <div style="display:flex;gap:6px;margin-bottom:10px">
-      <div class="tgt active" id="movie-tab-url" onclick="switchMovieTab('url')">🔗 URL / Drive ID</div>
-      <div class="tgt" id="movie-tab-gallery" onclick="switchMovieTab('gallery')">📱 Gallery</div>
-    </div>
-
-    <div id="movie-url-section">
-      <div class="label">URL বা Drive File ID</div>
-      <input class="inp" id="movieUrl" placeholder="https://... বা Drive File ID">
-      <div class="hint">Direct video URL, YouTube, Kuaishou, বা Drive File ID</div>
-    </div>
-
-    <div id="movie-gallery-section" style="display:none">
-      <button class="btn btn-primary" style="background:linear-gradient(135deg,#0f7a4a,#00d4aa);color:#000;margin-bottom:6px" onclick="document.getElementById('movieFileInput').click()">
-        📱 Gallery থেকে Video বেছে নাও
-      </button>
-      <input type="file" id="movieFileInput" accept="video/*" style="display:none" onchange="onMovieFileSelected(this)">
-      <div id="movieFileName" style="font-size:11px;color:var(--muted);margin-bottom:4px"></div>
-      <div id="movieUploadStatus" style="font-size:11px;text-align:center"></div>
-    </div>
-
-    <div class="label">Output Folder (Drive)</div>
-    <input class="inp" id="movieFolder" placeholder="Output Drive Folder ID">
-
-    <div style="display:flex;gap:10px;margin-top:10px">
-      <div style="flex:1">
-        <div class="label">Clip Duration (সেকেন্ড)</div>
-        <input class="inp" type="number" id="clipDur" value="60" min="10" max="600">
-      </div>
-      <div style="flex:1">
-        <div class="label">Clip Count</div>
-        <input class="inp" type="number" id="clipCount" value="5" min="1" max="50">
-      </div>
-    </div>
-
-    <div class="label" style="margin-top:12px">🎨 Cinematic Color Grade</div>
-    <div class="grade-grid" id="gradeGrid"></div>
-
-    <div class="trow" style="margin-top:8px">
-      <div><div style="font-size:13px;font-weight:600;color:#fff">🎵 Head Bob Effect</div><div class="ts">Dialog এ video উপর-নিচ হবে</div></div>
-      <label class="tog"><input type="checkbox" id="headBobToggle" checked><span class="tslider"></span></label>
-    </div>
-    <div id="headBobSettings" style="margin-top:8px">
-      <div class="label">Intensity</div>
-      <div class="range-row">
-        <span class="range-label">Low</span>
-        <input type="range" id="headBobInt" min="1" max="5" value="2" oninput="document.getElementById('headBobIntVal').textContent=this.value">
-        <span class="range-val" id="headBobIntVal">2</span>
-        <span class="range-label">High</span>
-      </div>
-    </div>
-
-    <div class="label" style="margin-top:12px">🔊 Dialog Volume</div>
-    <div class="range-row">
-      <span class="range-label">0</span>
-      <input type="range" id="dialogVol" min="0" max="2" step="0.1" value="1" oninput="document.getElementById('dialogVolVal').textContent=parseFloat(this.value).toFixed(1)">
-      <span class="range-val" id="dialogVolVal">1.0</span>
-      <span class="range-label">2x</span>
-    </div>
-
-    <div class="label">🎵 Background Music — Phonk থেকে নাও (ঐচ্ছিক)</div>
-    <select class="sel" id="moviePhonk" style="margin-bottom:6px">
-      <option value="">— Phonk use করবো না —</option>
-    </select>
-    <div class="trow" style="margin-bottom:10px">
-      <div><div style="font-size:13px;color:#fff">Phonk Loop 🔁</div><div class="ts">On = video যত লম্বা হোক phonk চলবে</div></div>
-      <label class="stog"><input type="checkbox" id="moviePhonkLoop"><span class="sslider"></span></label>
-    </div>
-    <div class="label">অথবা Drive File ID (music)</div>
-    <input class="inp" id="musicFileId" placeholder="Music Drive File ID (phonk না থাকলে)">
-    <div class="label">Music Volume</div>
-    <div class="range-row">
-      <span class="range-label">0</span>
-      <input type="range" id="musicVol" min="0" max="2" step="0.1" value="0.5" oninput="document.getElementById('musicVolVal').textContent=parseFloat(this.value).toFixed(1)">
-      <span class="range-val" id="musicVolVal">0.5</span>
-      <span class="range-label">2x</span>
-    </div>
-
-    <button class="btn btn-primary" onclick="startMovie()" id="movieBtn">🎬 Slicer শুরু করো</button>
-
-    <div id="movieProgress" style="display:none;margin-top:12px">
-      <div class="progress-bar"><div class="progress-fill" id="movieFill" style="width:0%"></div></div>
-      <div id="movieStep" style="font-size:12px;color:var(--muted);text-align:center;margin-top:4px"></div>
-    </div>
-    <div id="movieResult" style="margin-top:8px"></div>
-  </div>
-</div>
-
-<!-- ============ TAB: TROLL ============ -->
+<!-- ════════════════ TAB: TROLL ════════════════ -->
 <div class="tab" id="tab-troll">
+
   <div class="card">
-    <div class="card-title">💀 Troll Edit</div>
-    <div class="trow" style="margin-bottom:12px">
-      <div><div class="tl" style="font-size:14px">Troll Edit চালু</div><div class="ts">Upload এর আগে auto process</div></div>
-      <label class="tog"><input type="checkbox" id="trollToggle" onchange="onTrollToggle()"><span class="tslider"></span></label>
+    <div class="ct">⚙️ Troll Settings</div>
+    <div class="tr" style="margin-bottom:10px">
+      <div><div class="tl" style="font-size:14px">Auto Troll (scheduler)</div><div class="ts">Upload এর আগে auto edit</div></div>
+      <label class="tog"><input type="checkbox" id="trollEnabled" onchange="onTrollEnabled()"><span class="tsl"></span></label>
     </div>
-
-    <div class="label">Text Overlay</div>
-    <input class="inp" id="trollText" value="Wait for it... 💀" oninput="onTrollText(this.value)">
-
-    <div class="label" style="margin-top:10px">🎨 Color Filter</div>
+    <div class="lbl">Text Overlay</div>
+    <input class="inp" id="trollText" value="Wait for it... 💀" oninput="debounceTroll(this.value)">
+    <div class="lbl">Color Filter</div>
     <select class="sel" id="trollFilter" onchange="onTrollFilter()">
-      <option value="none">None (original)</option>
-      <option value="teal_orange">🎬 Teal & Orange</option>
+      <option value="none">None</option>
+      <option value="teal_orange">🎬 Teal-Orange</option>
       <option value="moody">🌑 Moody Dark</option>
       <option value="warm_film">🔥 Warm Film</option>
       <option value="cold_blue">🧊 Cold Blue</option>
@@ -298,22 +233,21 @@ input[type=range]{flex:1;accent-color:var(--accent);height:4px}
       <option value="golden_hour">🌅 Golden Hour</option>
       <option value="dream">✨ Dream</option>
     </select>
-
-    <div class="trow" style="margin-top:12px">
+    <div class="tr" style="margin-top:10px">
       <div><div style="font-size:13px;font-weight:600;color:#fff">🔁 Loop Phonk</div><div class="ts">On = video কাটবে না</div></div>
-      <label class="stog"><input type="checkbox" id="loopToggle" onchange="onLoopToggle()"><span class="sslider"></span></label>
+      <label class="stog"><input type="checkbox" id="trollLoop" onchange="onTrollLoop()"><span class="ssl"></span></label>
     </div>
   </div>
 
   <div class="card">
-    <div class="card-title">💀 Skull Image</div>
+    <div class="ct">💀 Skull Image</div>
     <div style="display:flex;align-items:center;gap:12px">
-      <div class="skull-preview" id="skullPreview" onclick="document.getElementById('skullInput').click()">
+      <div class="skull-zone" id="skullZone" onclick="document.getElementById('skullInput').click()">
         <span id="skullEmoji">💀</span>
       </div>
       <div>
-        <div style="font-size:13px;color:#fff;margin-bottom:4px">Skull PNG upload করো</div>
-        <div class="hint">Click করো বা drag & drop</div>
+        <div style="font-size:13px;color:#fff;margin-bottom:4px">PNG upload করো</div>
+        <div class="hint">Tap করো বা drag & drop</div>
         <div id="skullStatus" style="font-size:11px;color:var(--green);margin-top:4px"></div>
       </div>
     </div>
@@ -321,587 +255,678 @@ input[type=range]{flex:1;accent-color:var(--accent);height:4px}
   </div>
 
   <div class="card">
-    <div class="card-title">🎵 Phonk Manager <span class="badge" id="phonkBadge">0</span></div>
-    <div id="phonkList"></div>
-    <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
-    <div style="font-size:12px;color:#c4b5fd;font-weight:700;margin-bottom:8px">+ নতুন Phonk যোগ করো</div>
+    <div class="ct">🎬 Manual Troll Edit</div>
+    <div class="hint" style="margin-bottom:10px">Video → Troll edit → Preview → Drive / YouTube</div>
 
-    <!-- Tab selector -->
-    <div style="display:flex;gap:6px;margin-bottom:10px">
-      <div class="tgt active" id="phonk-tab-file" onclick="switchPhonkTab('file')">📱 File Upload</div>
-      <div class="tgt" id="phonk-tab-url" onclick="switchPhonkTab('url')">🔗 YouTube URL</div>
+    <!-- Video source -->
+    <div class="seg" style="margin-bottom:10px">
+      <div class="segs on" id="ts-gallery" onclick="switchTrollSrc('gallery',this)">📱 Gallery</div>
+      <div class="segs"    id="ts-drive"   onclick="switchTrollSrc('drive',this)">🔗 Drive ID</div>
     </div>
 
-    <!-- File upload section -->
-    <div id="phonk-file-section">
-      <button class="btn btn-primary" style="background:linear-gradient(135deg,#0f7a4a,#00d4aa);color:#000;margin-bottom:8px" onclick="document.getElementById('phonkFileInput').click()">
-        📱 MP3/Audio file বেছে নাও
-      </button>
-      <input type="file" id="phonkFileInput" accept="audio/*,video/mp4" style="display:none" onchange="onPhonkFileSelected(this)">
+    <div id="ts-gallery-div">
+      <div class="upzone" onclick="document.getElementById('trollVidInput').click()">
+        <div style="font-size:24px;margin-bottom:6px">📱</div>
+        <div style="font-size:13px;font-weight:600;color:#fff">Gallery থেকে Video বেছে নাও</div>
+        <div class="hint">যেকোনো size কাজ করবে</div>
+      </div>
+      <input type="file" id="trollVidInput" accept="video/*" style="display:none" onchange="onTrollVidSelected(this)">
+      <div id="trollVidStatus" style="font-size:11px;color:var(--muted);margin-bottom:6px"></div>
+    </div>
+    <div id="ts-drive-div" style="display:none">
+      <div class="lbl">Drive File ID</div>
+      <input class="inp" id="trollDriveId" placeholder="Drive File ID...">
+    </div>
+
+    <!-- Phonk -->
+    <div class="lbl">Phonk বেছে নাও</div>
+    <select class="sel" id="trollPhonkSel"><option value="">— Phonk নেই —</option></select>
+
+    <!-- Output -->
+    <div class="lbl" style="margin-top:10px">Output</div>
+    <div class="seg">
+      <div class="segs on" id="to-drive" onclick="switchTrollOut('drive',this)">📁 Drive</div>
+      <div class="segs"    id="to-yt"    onclick="switchTrollOut('yt',this)">▶ YouTube</div>
+      <div class="segs"    id="to-both"  onclick="switchTrollOut('both',this)">🔀 দুইটাই</div>
+    </div>
+    <div id="to-drive-div">
+      <div class="lbl">Drive Folder (ঐচ্ছিক)</div>
+      <input class="inp" id="trollOutFolder" placeholder="Folder ID (খালি = root)">
+    </div>
+    <div id="to-yt-div" style="display:none">
+      <div class="lbl">YouTube Privacy</div>
+      <select class="sel" id="trollYTPrivacy">
+        <option value="public">🌍 Public</option>
+        <option value="private">🔒 Private</option>
+        <option value="unlisted">🔗 Unlisted</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" style="background:linear-gradient(135deg,#ff4785,#7c3aed)" onclick="startTroll()" id="trollBtn">💀 Troll Edit শুরু করো</button>
+    <div class="pbar" id="trollBar" style="display:none"><div class="pfill pulsing" style="width:40%"></div></div>
+    <div id="trollStatus" style="font-size:12px;color:var(--muted);text-align:center;margin-top:6px"></div>
+  </div>
+
+</div>
+
+<!-- ════════════════ TAB: MOVIE ════════════════ -->
+<div class="tab" id="tab-movie">
+  <div class="card">
+    <div class="ct">🎬 Movie Slicer → Shorts</div>
+    <div class="hint" style="margin-bottom:12px">Movie/drama → 9:16 Short clips → Drive</div>
+
+    <!-- Video source -->
+    <div class="seg">
+      <div class="segs on" id="ms-gallery" onclick="switchMovieSrc('gallery',this)">📱 Gallery</div>
+      <div class="segs"    id="ms-url"     onclick="switchMovieSrc('url',this)">🔗 URL</div>
+      <div class="segs"    id="ms-drive"   onclick="switchMovieSrc('drive',this)">📁 Drive</div>
+    </div>
+
+    <div id="ms-gallery-div">
+      <div class="upzone" onclick="document.getElementById('movieVidInput').click()">
+        <div style="font-size:24px;margin-bottom:6px">📱</div>
+        <div style="font-size:13px;font-weight:600;color:#fff">Gallery থেকে Video বেছে নাও</div>
+        <div class="hint">Server এ stream upload হবে</div>
+      </div>
+      <input type="file" id="movieVidInput" accept="video/*" style="display:none" onchange="onMovieVidSelected(this)">
+      <div id="movieVidStatus" style="font-size:11px;color:var(--muted);margin-bottom:6px"></div>
+    </div>
+    <div id="ms-url-div" style="display:none">
+      <div class="lbl">URL (Direct / Kuaishou / YouTube)</div>
+      <input class="inp" id="movieUrl" placeholder="https://...">
+    </div>
+    <div id="ms-drive-div" style="display:none">
+      <div class="lbl">Drive File ID</div>
+      <input class="inp" id="movieDriveId" placeholder="Drive File ID...">
+    </div>
+
+    <div class="lbl">Output Folder (Drive)</div>
+    <input class="inp" id="movieOutFolder" placeholder="Output Folder ID">
+
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <div style="flex:1"><div class="lbl">Clip Duration (sec)</div><input class="inp" type="number" id="clipDur" value="60" min="10" max="600"></div>
+      <div style="flex:1"><div class="lbl">Clip Count</div><input class="inp" type="number" id="clipCount" value="5" min="1" max="30"></div>
+    </div>
+
+    <div class="lbl" style="margin-top:12px">🎨 Cinematic Color Grade</div>
+    <div class="ggrid" id="gradeGrid"></div>
+
+    <div class="tr" style="margin-top:6px;margin-bottom:8px">
+      <div><div style="font-size:13px;font-weight:600;color:#fff">🎵 Head Bob</div><div class="ts">Dialog এ video ওঠানামা করে</div></div>
+      <label class="stog"><input type="checkbox" id="headBobToggle" checked><span class="ssl"></span></label>
+    </div>
+    <div class="lbl">Intensity</div>
+    <div class="rrow">
+      <span class="rlb">Low</span>
+      <input type="range" id="hbInt" min="1" max="5" value="2" oninput="document.getElementById('hbIntV').textContent=this.value">
+      <span class="rval" id="hbIntV">2</span>
+      <span class="rlb">High</span>
+    </div>
+
+    <div class="lbl" style="margin-top:10px">🔊 Dialog Volume</div>
+    <div class="rrow">
+      <span class="rlb">0</span>
+      <input type="range" id="dialogVol" min="0" max="2" step="0.1" value="1" oninput="document.getElementById('dialogVolV').textContent=parseFloat(this.value).toFixed(1)">
+      <span class="rval" id="dialogVolV">1.0</span>
+      <span class="rlb">2x</span>
+    </div>
+
+    <div class="lbl" style="margin-top:10px">🎵 Phonk (dialog replace করবে)</div>
+    <select class="sel" id="moviePhonkSel"><option value="">— Phonk ছাড়া (dialog থাকবে) —</option></select>
+    <div class="tr" style="margin-top:8px">
+      <div><div style="font-size:12px;color:#fff">Phonk Loop 🔁</div><div class="ts">Video যত লম্বা হোক phonk চলবে</div></div>
+      <label class="stog"><input type="checkbox" id="moviePhonkLoop"><span class="ssl"></span></label>
+    </div>
+
+    <button class="btn-primary" onclick="startMovie()" id="movieBtn">🎬 Slicer শুরু করো</button>
+    <div class="pbar" id="movieBar" style="display:none"><div class="pfill" id="movieFill" style="width:0%"></div></div>
+    <div id="movieStep" style="font-size:12px;color:var(--muted);text-align:center;margin-top:4px"></div>
+    <div id="movieResult" style="margin-top:8px"></div>
+  </div>
+</div>
+
+<!-- ════════════════ TAB: PHONK ════════════════ -->
+<div class="tab" id="tab-phonk">
+  <div class="card">
+    <div class="ct">🎵 Phonk Manager <span class="badge" id="phonkBadge">0</span></div>
+    <div id="phonkList"></div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
+    <div style="font-size:12px;font-weight:700;color:#c4b5fd;margin-bottom:10px">+ নতুন Phonk</div>
+
+    <div class="seg">
+      <div class="segs on" id="pa-file" onclick="switchPhonkAdd('file',this)">📱 File Upload</div>
+      <div class="segs"    id="pa-yt"   onclick="switchPhonkAdd('yt',this)">🔗 YouTube URL</div>
+    </div>
+
+    <div id="pa-file-div">
+      <div class="upzone" onclick="document.getElementById('phonkFileInput').click()">
+        <div style="font-size:24px;margin-bottom:4px">🎵</div>
+        <div style="font-size:13px;font-weight:600;color:#fff">MP3 / Audio file বেছে নাও</div>
+      </div>
+      <input type="file" id="phonkFileInput" accept="audio/*" style="display:none" onchange="onPhonkFileSelected(this)">
       <div id="phonkFileName" style="font-size:11px;color:var(--muted);margin-bottom:6px"></div>
     </div>
+    <div id="pa-yt-div" style="display:none">
+      <div class="lbl">YouTube Link</div>
+      <input class="inp" id="phonkYtUrl" placeholder="https://youtube.com/watch?v=...">
+    </div>
 
-    <!-- YouTube URL section -->
-    <div id="phonk-url-section" style="display:none">
-      <div class="label">YouTube Link</div>
-      <input class="inp" id="phonkUrl" placeholder="https://youtube.com/watch?v=...">
-    </div>
-    <div class="label">নাম</div>
+    <div class="lbl">নাম</div>
     <input class="inp" id="phonkName" placeholder="Dark Phonk 1">
-    <div class="label">Drop Time (সেকেন্ড) — phonk কত সেকেন্ড থেকে শুরু</div>
+    <div class="lbl">Drop Time (সেকেন্ড)</div>
     <input class="inp" type="number" id="phonkDrop" value="0" min="0" step="0.5">
-    <button class="btn btn-primary" onclick="addPhonk()" id="phonkBtn">⬇️ Download & Save</button>
-    <div id="phonkProgress" style="display:none;margin-top:8px">
-      <div class="progress-bar"><div class="progress-fill" id="phonkFill" style="width:50%;animation:pulse 1.5s infinite"></div></div>
-      <div id="phonkStep" style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px">Downloading...</div>
-    </div>
+    <div class="hint">Phonk এর কত সেকেন্ড থেকে শুরু হবে</div>
+
+    <button class="btn-primary" onclick="addPhonk()" id="phonkAddBtn">⬇️ Save Phonk</button>
+    <div class="pbar" id="phonkBar" style="display:none"><div class="pfill pulsing" style="width:50%"></div></div>
+    <div id="phonkAddStatus" style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px"></div>
   </div>
 </div>
 
-<!-- ============ TAB: DOWNLOAD ============ -->
+<!-- ════════════════ TAB: DOWNLOAD ════════════════ -->
 <div class="tab" id="tab-dl">
   <div class="card">
-    <div class="card-title">📥 Single Download → Drive</div>
-    <div class="label">URL (YouTube, Kuaishou, Direct Link...)</div>
-    <input class="inp" id="dlUrl" placeholder="https://...">
-    <div class="label">Drive Folder ID</div>
+    <div class="ct">📥 Download → Drive</div>
+    <div class="lbl">Drive Folder ID (destination)</div>
     <input class="inp" id="dlFolder" placeholder="Folder ID (ঐচ্ছিক)">
-    <button class="btn btn-primary" onclick="startSingleDl()" id="dlBtn">⬇️ Download করো</button>
-    <div id="dlStatus" style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center"></div>
+    <div class="lbl">Links (এক লাইনে একটা)</div>
+    <textarea class="inp" id="dlLinks" rows="6" placeholder="https://www.kuaishou.com/...&#10;https://bcdnxw.hakunaymatata.com/...&#10;https://youtube.com/shorts/..."></textarea>
+    <button class="btn-primary" style="background:linear-gradient(135deg,#e8540a,#ff6b35)" onclick="startDl()" id="dlBtn">⬇️ Download শুরু করো</button>
+    <div class="pbar" id="dlBar" style="display:none"><div class="pfill" id="dlFill" style="width:0%"></div></div>
+    <div id="dlStatus" style="font-size:12px;color:var(--muted);text-align:center;margin-top:6px"></div>
   </div>
 
   <div class="card">
-    <div class="card-title">📦 Bulk Download → Drive</div>
-    <div class="label">Drive Folder ID</div>
-    <input class="inp" id="bulkFolder" placeholder="Folder ID">
-    <div class="label">Links (এক লাইনে একটা)</div>
-    <textarea class="inp" id="bulkLinks" placeholder="https://www.kuaishou.com/...&#10;https://v.kuaishou.com/...&#10;https://youtube.com/..." rows="6"></textarea>
-    <button class="btn btn-primary" style="background:linear-gradient(135deg,#e8540a,#ff6b35)" onclick="startBulk()" id="bulkBtn">📦 Bulk শুরু করো</button>
-    <div class="progress-bar" id="bulkBar" style="display:none"><div class="progress-fill" id="bulkFill" style="width:0%"></div></div>
-    <div id="bulkStatus" style="font-size:12px;color:var(--muted);margin-top:6px;text-align:center"></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">📱 Gallery → Drive (Direct)</div>
-    <div class="hint" style="margin-bottom:10px">Server bypass — সরাসরি browser থেকে Drive এ upload। সবচেয়ে দ্রুত!</div>
-    <div class="label">Drive Folder ID</div>
-    <input class="inp" id="galleryFolder" placeholder="Folder ID">
-    <button class="btn btn-primary" style="background:linear-gradient(135deg,#0f7a4a,#00d4aa);color:#000" onclick="document.getElementById('galleryInput').click()">📱 Gallery থেকে বেছে নাও</button>
-    <input type="file" id="galleryInput" accept="video/*" multiple style="display:none" onchange="startGalleryUpload(this)">
-    <div id="galleryStatus" style="margin-top:10px"></div>
+    <div class="ct">📱 Gallery → Drive (Direct)</div>
+    <div class="hint" style="margin-bottom:10px">Browser থেকে সরাসরি Drive এ — server bypass, সবচেয়ে দ্রুত!</div>
+    <div class="lbl">Drive Folder ID</div>
+    <input class="inp" id="galFolder" placeholder="Folder ID">
+    <button class="btn-primary" style="background:linear-gradient(135deg,#0f7a4a,#00d4aa);color:#000" onclick="document.getElementById('galInput').click()">📱 Files বেছে নাও</button>
+    <input type="file" id="galInput" accept="video/*" multiple style="display:none" onchange="startGalleryUpload(this)">
+    <div id="galStatus" style="margin-top:8px"></div>
   </div>
 </div>
 
-<!-- ============ TAB: LOGS ============ -->
+<!-- ════════════════ TAB: LOGS ════════════════ -->
 <div class="tab" id="tab-logs">
   <div class="card">
-    <div class="card-title">📋 লগ <button class="btn-sm btn-add" style="margin-left:auto" onclick="loadLogs()">↻</button></div>
-    <div class="log-box" id="logBox"><p class="log-line">লোড হচ্ছে...</p></div>
+    <div class="ct">📋 লগ <button class="btn-add" style="margin-left:auto;font-size:11px" onclick="loadLogs()">↻</button></div>
+    <div class="logbox" id="logBox"><p class="lline">লোড হচ্ছে...</p></div>
   </div>
   <div class="card">
-    <div class="card-title">📊 Video Queue</div>
-    <div id="queueInfo" style="font-size:12px;color:var(--muted)"></div>
+    <div class="ct">📊 Queue</div>
+    <div id="qInfo" style="font-size:12px;color:var(--muted)"></div>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn-sm btn-danger" onclick="resetQueue()">🗑 Reset</button>
-      <button class="btn-sm btn-add" onclick="loadQueueInfo()">↻</button>
+      <button class="btn-danger" onclick="resetQueue()">🗑 Reset</button>
+      <button class="btn-add" onclick="loadQueueInfo()">↻</button>
     </div>
   </div>
 </div>
 
 <!-- BOTTOM NAV -->
 <div class="nav">
-  <button class="nb active" onclick="showTab('home',this)"><span class="icon">🏠</span><span>Home</span></button>
-  <button class="nb" onclick="showTab('days',this)"><span class="icon">📅</span><span>Days</span></button>
-  <button class="nb" onclick="showTab('movie',this)"><span class="icon">🎬</span><span>Movie</span></button>
-  <button class="nb" onclick="showTab('troll',this)"><span class="icon">💀</span><span>Troll</span></button>
-  <button class="nb" onclick="showTab('dl',this)"><span class="icon">📥</span><span>Download</span></button>
-  <button class="nb" onclick="showTab('logs',this)"><span class="icon">📋</span><span>Logs</span></button>
+  <button class="nb active" onclick="showTab('home',this)"><span class="ic">🏠</span><span>Home</span></button>
+  <button class="nb" onclick="showTab('days',this)"><span class="ic">📅</span><span>Days</span></button>
+  <button class="nb" onclick="showTab('troll',this)"><span class="ic">💀</span><span>Troll</span></button>
+  <button class="nb" onclick="showTab('movie',this)"><span class="ic">🎬</span><span>Movie</span></button>
+  <button class="nb" onclick="showTab('phonk',this)"><span class="ic">🎵</span><span>Phonk</span></button>
+  <button class="nb" onclick="showTab('dl',this)"><span class="ic">📥</span><span>Download</span></button>
+  <button class="nb" onclick="showTab('logs',this)"><span class="ic">📋</span><span>Logs</span></button>
 </div>
 
-<style>
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
-</style>
+<!-- PREVIEW MODAL -->
+<div class="modal" id="previewModal">
+  <div style="width:100%;max-width:420px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <span style="font-size:14px;font-weight:700;color:#fff">👁 Preview</span>
+      <button class="btn-add" onclick="closePreview()">✕ বন্ধ</button>
+    </div>
+    <video id="previewVid" controls playsinline style="width:100%;border-radius:12px;background:#000;max-height:75vh"></video>
+  </div>
+</div>
 
 <script>
 'use strict';
+
 const DAYS_EN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const DAYS_BN=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
-let config={enabled:false,slots:[],privacy:'public',target:'youtube',days:{},troll:{enabled:false,colorFilter:'none',loopAudio:false,textOverlay:'Wait for it... 💀'},movie:{colorGrade:'teal_orange',headBob:true,headBobIntensity:2,clipDuration:60,clipCount:5,dialogVol:1.0,musicVol:0.5}};
-let selectedGrade='teal_orange';
-let trollTextTimer=null, movieJobId=null, moviePollInterval=null;
+const GRADE_LABELS={none:'None',teal_orange:'🎬 Teal-Orange',moody:'🌑 Moody',warm_film:'🔥 Warm Film',cold_blue:'🧊 Cold Blue',vintage:'🎞 Vintage',neon_noir:'⚡ Neon Noir',golden_hour:'🌅 Golden Hour',dream:'✨ Dream'};
 
-// ===== TAB =====
+let cfg={enabled:false,slots:[],privacy:'public',days:{},troll:{enabled:false,colorFilter:'none',loopAudio:false,textOverlay:'Wait for it... 💀'}};
+let selectedGrade='teal_orange';
+let trollSrcMode='gallery', trollOutMode='drive', movieSrcMode='gallery';
+let trollTmpPath=null, movieTmpPath=null, phonkAddMode='file', phonkSelectedFile=null;
+let trollJobInt=null, movieJobInt=null, dlJobInt=null;
+let trollTextTimer=null;
+
+// ── TABS ─────────────────────────────────────────────────────────
 function showTab(name,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
   document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
   if(name==='logs'){loadLogs();loadQueueInfo();}
-  if(name==='troll'){loadPhonks();checkSkull();}
-  if(name==='movie') loadMoviePhonks();
+  if(name==='troll'){loadTrollPhonks();checkSkull();}
+  if(name==='movie'){loadMoviePhonks();}
+  if(name==='phonk'){loadPhonks();}
   if(name==='days') renderDays();
 }
 
-// ===== STATUS =====
+// ── STATUS ────────────────────────────────────────────────────────
 async function loadStatus(){
   try{
     const d=await(await fetch('/api/status')).json();
     document.getElementById('dDot').className='dot'+(d.drive?' on':'');
     document.getElementById('yDot').className='dot'+(d.youtube?' on':'');
-    document.getElementById('connInfo').textContent=[d.channelName?'▶ '+d.channelName:''].filter(Boolean).join('  ')||'';
+    document.getElementById('yLbl').textContent=d.channelName||'YT';
+    if(d.channelName) document.getElementById('connInfo').textContent='▶ '+d.channelName;
   }catch{}
 }
 
-// ===== CONFIG =====
+// ── CONFIG ────────────────────────────────────────────────────────
 async function loadConfig(){
   try{
-    const r=await fetch('/api/config');
-    config=await r.json();
-    document.getElementById('mainToggle').checked=config.enabled;
-    document.getElementById('schedSub').textContent=config.enabled?'✅ চালু আছে':'বন্ধ আছে';
-    document.getElementById('privacySel').value=config.privacy||'public';
-    // Troll
-    const tc=config.troll||{};
-    document.getElementById('trollToggle').checked=tc.enabled||false;
+    cfg=await(await fetch('/api/config')).json();
+    document.getElementById('schedToggle').checked=cfg.enabled;
+    document.getElementById('schedSub').textContent=cfg.enabled?'✅ চালু আছে':'বন্ধ আছে';
+    document.getElementById('privacySel').value=cfg.privacy||'public';
+    const tc=cfg.troll||{};
+    document.getElementById('trollEnabled').checked=tc.enabled||false;
     document.getElementById('trollText').value=tc.textOverlay||'Wait for it... 💀';
     document.getElementById('trollFilter').value=tc.colorFilter||'none';
-    document.getElementById('loopToggle').checked=tc.loopAudio||false;
-    // Movie
-    const mc=config.movie||{};
-    document.getElementById('clipDur').value=mc.clipDuration||60;
-    document.getElementById('clipCount').value=mc.clipCount||5;
-    document.getElementById('headBobToggle').checked=mc.headBob!==false;
-    document.getElementById('headBobInt').value=mc.headBobIntensity||2;
-    document.getElementById('headBobIntVal').textContent=mc.headBobIntensity||2;
-    document.getElementById('dialogVol').value=mc.dialogVol||1;
-    document.getElementById('dialogVolVal').textContent=(mc.dialogVol||1).toFixed(1);
-    document.getElementById('musicVol').value=mc.musicVol||0.5;
-    document.getElementById('musicVolVal').textContent=(mc.musicVol||0.5).toFixed(1);
-    selectedGrade=mc.colorGrade||'teal_orange';
+    document.getElementById('trollLoop').checked=tc.loopAudio||false;
+    selectedGrade=cfg.movie?.colorGrade||'teal_orange';
     renderGradeGrid();
     renderSlots();
-    renderDays();
   }catch{}
 }
-async function saveConfig(){
-  await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
-}
-function onMainToggle(){config.enabled=document.getElementById('mainToggle').checked;document.getElementById('schedSub').textContent=config.enabled?'✅ চালু আছে':'বন্ধ আছে';saveConfig();}
-function onPrivacy(){config.privacy=document.getElementById('privacySel').value;saveConfig();}
+async function saveConfig(){ await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(cfg)}); }
 
-// ===== SLOTS =====
+function onSched(){ cfg.enabled=document.getElementById('schedToggle').checked; document.getElementById('schedSub').textContent=cfg.enabled?'✅ চালু আছে':'বন্ধ আছে'; saveConfig(); }
+function onPrivacy(){ cfg.privacy=document.getElementById('privacySel').value; saveConfig(); }
+function onTrollEnabled(){ if(!cfg.troll)cfg.troll={}; cfg.troll.enabled=document.getElementById('trollEnabled').checked; saveConfig(); }
+function onTrollFilter(){ if(!cfg.troll)cfg.troll={}; cfg.troll.colorFilter=document.getElementById('trollFilter').value; saveConfig(); }
+function onTrollLoop(){ if(!cfg.troll)cfg.troll={}; cfg.troll.loopAudio=document.getElementById('trollLoop').checked; saveConfig(); }
+function debounceTroll(v){ if(!cfg.troll)cfg.troll={}; cfg.troll.textOverlay=v; clearTimeout(trollTextTimer); trollTextTimer=setTimeout(saveConfig,700); }
+
+// ── SLOTS ─────────────────────────────────────────────────────────
 function renderSlots(){
-  const slots=config.slots||[];
+  const slots=cfg.slots||[];
   document.getElementById('slotBadge').textContent=slots.length;
-  const list=document.getElementById('slotList');
-  if(!slots.length){list.innerHTML='<p style="color:var(--muted);font-size:12px;text-align:center;padding:8px">সময় নেই</p>';return;}
-  list.innerHTML=slots.map((s,i)=>{
-    const[h,m]=s.time.split(':').map(Number);
+  const div=document.getElementById('slotList');
+  if(!slots.length){div.innerHTML='<p style="color:var(--muted);font-size:12px;text-align:center;padding:8px">সময় নেই</p>';return;}
+  div.innerHTML=slots.map((s,i)=>{
+    const[h]=s.time.split(':').map(Number);
     const ap=h<6?'ভোর':h<12?'সকাল':h<15?'দুপুর':h<18?'বিকাল':h<21?'সন্ধ্যা':'রাত';
-    return`<div class="slot-item">
-      <span class="slot-time">${s.time}</span>
+    return`<div class="sitem">
+      <span class="stime">${s.time}</span>
       <span style="flex:1;font-size:11px;color:var(--muted)">${ap}</span>
-      <label class="stog"><input type="checkbox" ${s.enabled?'checked':''} onchange="toggleSlot(${i},this.checked)"><span class="sslider"></span></label>
-      <button class="btn-sm btn-danger" style="padding:4px 8px" onclick="removeSlot(${i})">✕</button>
+      <label class="stog"><input type="checkbox" ${s.enabled?'checked':''} onchange="toggleSlot(${i},this.checked)"><span class="ssl"></span></label>
+      <button class="btn-danger" style="padding:4px 8px" onclick="removeSlot(${i})">✕</button>
     </div>`;
   }).join('');
 }
-function addSlot(){const t=document.getElementById('newTime').value;if(!t)return;if(!config.slots)config.slots=[];if(config.slots.find(s=>s.time===t)){alert('এই সময় আছে');return;}config.slots.push({time:t,enabled:true});config.slots.sort((a,b)=>a.time.localeCompare(b.time));saveConfig();renderSlots();}
-function removeSlot(i){config.slots.splice(i,1);saveConfig();renderSlots();}
-function toggleSlot(i,v){config.slots[i].enabled=v;saveConfig();}
+function addSlot(){
+  const t=document.getElementById('newTime').value; if(!t)return;
+  if(!cfg.slots)cfg.slots=[];
+  if(cfg.slots.find(s=>s.time===t)){alert('সময় আছে');return;}
+  cfg.slots.push({time:t,enabled:true}); cfg.slots.sort((a,b)=>a.time.localeCompare(b.time));
+  saveConfig(); renderSlots();
+}
+function removeSlot(i){cfg.slots.splice(i,1);saveConfig();renderSlots();}
+function toggleSlot(i,v){cfg.slots[i].enabled=v;saveConfig();}
 
-// ===== DAYS =====
+// ── DAYS ──────────────────────────────────────────────────────────
 function renderDays(){
-  const grid=document.getElementById('dayGrid');
-  if(!grid)return;
+  const g=document.getElementById('dayGrid'); if(!g)return;
   const today=new Date().toLocaleDateString('en-US',{weekday:'long',timeZone:'Asia/Dhaka'});
-  grid.innerHTML=DAYS_EN.map((day,i)=>{
-    const dc=(config.days||{})[day]||{folderId:'',template:'',enabled:true};
+  g.innerHTML=DAYS_EN.map((day,i)=>{
+    const dc=(cfg.days||{})[day]||{folderId:'',template:'',enabled:true};
     const isToday=day===today;
-    return`<div class="day-card ${isToday?'today':''}">
-      <div class="day-hdr" onclick="toggleDay(${i})">
+    return`<div class="dcard ${isToday?'today':''}">
+      <div class="dhdr" onclick="toggleDay(${i})">
         <div style="display:flex;align-items:center;gap:8px">
-          <span class="day-name">${DAYS_BN[i]}</span>
+          <span class="dname">${DAYS_BN[i]}</span>
           ${isToday?'<span class="badge">আজ</span>':''}
         </div>
         <div style="display:flex;align-items:center;gap:8px">
           <span style="font-size:11px;color:${dc.folderId?'var(--green)':'var(--muted)'}">${dc.folderId?'✅':'⚠️'}</span>
-          <label class="stog" onclick="event.stopPropagation()"><input type="checkbox" ${dc.enabled?'checked':''} onchange="saveDayCfg('${day}','enabled',this.checked)"><span class="sslider"></span></label>
+          <label class="stog" onclick="event.stopPropagation()"><input type="checkbox" ${dc.enabled?'checked':''} onchange="setDay('${day}','enabled',this.checked)"><span class="ssl"></span></label>
           <span class="chev" id="chev-${i}">▼</span>
         </div>
       </div>
-      <div class="day-body" id="dbody-${i}">
-        <div class="label">Drive Folder ID</div>
-        <input class="inp" value="${dc.folderId||''}" placeholder="Folder ID..." oninput="saveDayCfg('${day}','folderId',this.value)">
-        <div class="label">Title Template ({{name}} = file নাম)</div>
-        <input class="inp" value="${dc.template||''}" placeholder="#shorts #viral" oninput="saveDayCfg('${day}','template',this.value)">
+      <div class="dbody" id="db-${i}">
+        <div class="lbl">Drive Folder ID</div>
+        <input class="inp" value="${dc.folderId||''}" placeholder="Folder ID..." oninput="setDay('${day}','folderId',this.value)">
+        <div class="lbl">Template ({{name}} = ফাইলের নাম)</div>
+        <input class="inp" value="${dc.template||''}" placeholder="#shorts #viral" oninput="setDay('${day}','template',this.value)">
         <div style="display:flex;gap:6px;margin-top:10px">
-          <button class="btn-sm btn-green" style="flex:1" onclick="runDay('${day}')">▶ এখনই</button>
-          <button class="btn-sm btn-add" style="flex:1" onclick="testFolder('${day}')">🔍 Test</button>
+          <button class="btn-green" style="flex:1" onclick="runDay('${day}')">▶ এখনই</button>
+          <button class="btn-add" style="flex:1" onclick="testFolder('${day}')">🔍 Test</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
-function toggleDay(i){const b=document.getElementById('dbody-'+i),c=document.getElementById('chev-'+i);b.classList.toggle('open');c.classList.toggle('open');}
-function saveDayCfg(day,key,val){if(!config.days)config.days={};if(!config.days[day])config.days[day]={folderId:'',template:'',enabled:true};config.days[day][key]=val;saveConfig();}
-async function runDay(day){const dc=(config.days||{})[day]||{};if(!dc.folderId){alert('Folder ID দাও!');return;}const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId,template:dc.template,privacy:config.privacy})});const d=await r.json();d.success?alert('✅ শুরু হয়েছে! লগ দেখো।'):alert('❌ '+d.error);}
-async function testFolder(day){const dc=(config.days||{})[day]||{};if(!dc.folderId){alert('Folder ID দাও!');return;}const r=await fetch('/api/test-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId})});const d=await r.json();d.success?alert(`✅ ${d.count}টি ভিডিও\n\n${d.sample.join('\n')}`):alert('❌ '+d.error);}
+function toggleDay(i){document.getElementById('db-'+i).classList.toggle('open');document.getElementById('chev-'+i).classList.toggle('open');}
+function setDay(day,key,val){if(!cfg.days)cfg.days={};if(!cfg.days[day])cfg.days[day]={folderId:'',template:'',enabled:true};cfg.days[day][key]=val;saveConfig();}
+async function runDay(day){const dc=(cfg.days||{})[day]||{};if(!dc.folderId){alert('Folder ID দাও!');return;}const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId,template:dc.template,privacy:cfg.privacy})});const d=await r.json();d.success?alert('✅ শুরু! লগ দেখো।'):alert('❌ '+d.error);}
+async function testFolder(day){const dc=(cfg.days||{})[day]||{};if(!dc.folderId){alert('Folder ID দাও!');return;}const r=await fetch('/api/test-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId})});const d=await r.json();d.success?alert(`✅ ${d.count}টি ভিডিও\n\n${d.sample.join('\n')}`):alert('❌ '+d.error);}
 
-// ===== RUN NOW =====
+// ── RUN NOW ───────────────────────────────────────────────────────
 async function runNow(){
   const folderId=document.getElementById('nowFolder').value.trim();
   const template=document.getElementById('nowTemplate').value.trim();
   if(!folderId){alert('Folder ID দাও!');return;}
-  const btn=document.getElementById('runBtn');
-  btn.disabled=true;btn.textContent='⏳ চলছে...';
-  const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId,template,privacy:config.privacy})});
+  const btn=document.getElementById('runBtn');btn.disabled=true;btn.textContent='⏳ চলছে...';
+  const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId,template,privacy:cfg.privacy})});
   const d=await r.json();
   btn.disabled=false;btn.textContent='🚀 Upload শুরু করো';
   d.success?alert('✅ শুরু! লগ ট্যাবে দেখো।'):alert('❌ '+d.error);
 }
 
-// ===== TROLL =====
-function onTrollToggle(){if(!config.troll)config.troll={};config.troll.enabled=document.getElementById('trollToggle').checked;saveConfig();}
-function onTrollFilter(){if(!config.troll)config.troll={};config.troll.colorFilter=document.getElementById('trollFilter').value;saveConfig();}
-function onLoopToggle(){if(!config.troll)config.troll={};config.troll.loopAudio=document.getElementById('loopToggle').checked;saveConfig();}
-function onTrollText(v){if(!config.troll)config.troll={};config.troll.textOverlay=v;clearTimeout(trollTextTimer);trollTextTimer=setTimeout(saveConfig,700);}
-
-// Skull
+// ── SKULL ─────────────────────────────────────────────────────────
 async function checkSkull(){
-  const r=await(await fetch('/api/skull/exists')).json();
-  if(r.exists){document.getElementById('skullPreview').innerHTML='<img src="/assets/skull.png?t='+Date.now()+'">';document.getElementById('skullStatus').textContent='✅ Skull set আছে';}
+  const r=await(await fetch('/api/skull')).json();
+  if(r.exists){document.getElementById('skullZone').innerHTML=`<img src="/assets/skull.png?t=${Date.now()}">`;document.getElementById('skullStatus').textContent='✅ Skull set';}
 }
 async function uploadSkull(input){
   const file=input.files[0];if(!file)return;
   const reader=new FileReader();
   reader.onload=async e=>{
-    const base64=e.target.result;
-    const r=await fetch('/api/skull/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64})});
+    const r=await fetch('/api/skull',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64:e.target.result})});
     const d=await r.json();
-    if(d.success){document.getElementById('skullPreview').innerHTML='<img src="/assets/skull.png?t='+Date.now()+'">';document.getElementById('skullStatus').textContent='✅ Upload সম্পন্ন!';}
+    if(d.success){document.getElementById('skullZone').innerHTML=`<img src="/assets/skull.png?t=${Date.now()}">`;document.getElementById('skullStatus').textContent='✅ Upload সম্পন্ন!';}
     else alert('❌ '+d.error);
   };
   reader.readAsDataURL(file);
 }
 
-// Phonk
+// ── TROLL ─────────────────────────────────────────────────────────
+function switchTrollSrc(mode,el){
+  trollSrcMode=mode;
+  ['gallery','drive'].forEach(m=>{document.getElementById('ts-'+m).classList.toggle('on',m===mode);document.getElementById('ts-'+m+'-div').style.display=m===mode?'':'none';});
+}
+function switchTrollOut(mode,el){
+  trollOutMode=mode;
+  ['drive','yt','both'].forEach(m=>{document.getElementById('to-'+m).classList.toggle('on',m===mode);});
+  document.getElementById('to-drive-div').style.display=(mode==='drive'||mode==='both')?'':'none';
+  document.getElementById('to-yt-div').style.display=(mode==='yt'||mode==='both')?'':'none';
+}
+
+async function onTrollVidSelected(input){
+  const file=input.files[0];if(!file)return;
+  trollTmpPath=null;
+  document.getElementById('trollVidStatus').textContent='⏳ Server এ upload হচ্ছে... '+file.name;
+  document.getElementById('trollVidStatus').style.color='var(--muted)';
+  const fd=new FormData(); fd.append('video',file,file.name);
+  try{
+    const r=await fetch('/api/troll/upload',{method:'POST',body:fd});
+    const d=await r.json();
+    if(d.success){trollTmpPath=d.tmpPath;document.getElementById('trollVidStatus').textContent='✅ Ready: '+file.name;document.getElementById('trollVidStatus').style.color='var(--green)';}
+    else{document.getElementById('trollVidStatus').textContent='❌ '+d.error;document.getElementById('trollVidStatus').style.color='#fc8181';}
+  }catch(e){document.getElementById('trollVidStatus').textContent='❌ '+e.message;document.getElementById('trollVidStatus').style.color='#fc8181';}
+}
+
+async function loadTrollPhonks(){
+  const list=await(await fetch('/api/phonk')).json();
+  const sel=document.getElementById('trollPhonkSel');
+  sel.innerHTML='<option value="">— Phonk নেই —</option>'+list.map(p=>`<option value="${p.name}">${p.name} (${(p.duration||0).toFixed(1)}s)</option>`).join('');
+}
+
+async function startTroll(){
+  const phonkName=document.getElementById('trollPhonkSel').value;
+  if(!phonkName){alert('Phonk বেছে নাও!');return;}
+  let body={phonkName, colorFilter:(cfg.troll||{}).colorFilter||'none', loopAudio:(cfg.troll||{}).loopAudio||false, textOverlay:(cfg.troll||{}).textOverlay||'Wait for it... 💀', toDrive:(trollOutMode==='drive'||trollOutMode==='both'), toYT:(trollOutMode==='yt'||trollOutMode==='both'), driveFolder:document.getElementById('trollOutFolder').value.trim()||null, ytPrivacy:document.getElementById('trollYTPrivacy').value};
+  if(trollSrcMode==='gallery'){if(!trollTmpPath){alert('আগে Gallery থেকে video upload করো!');return;} body.tmpPath=trollTmpPath;}
+  else{const id=document.getElementById('trollDriveId').value.trim();if(!id){alert('Drive File ID দাও!');return;} body.driveFileId=id;}
+
+  const btn=document.getElementById('trollBtn'); btn.disabled=true; btn.textContent='⏳ Processing...';
+  document.getElementById('trollBar').style.display='block';
+  document.getElementById('trollStatus').textContent='শুরু হচ্ছে...'; document.getElementById('trollStatus').style.color='var(--muted)';
+
+  try{
+    const r=await fetch('/api/troll/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(!d.success){alert('❌ '+d.error);btn.disabled=false;btn.textContent='💀 Troll Edit শুরু করো';document.getElementById('trollBar').style.display='none';return;}
+    const jobId=d.jobId;
+    if(trollJobInt)clearInterval(trollJobInt);
+    trollJobInt=setInterval(async()=>{
+      try{
+        const s=await(await fetch('/api/troll/job/'+jobId)).json();
+        document.getElementById('trollStatus').textContent=s.step||s.status;
+        if(s.status==='done'){
+          clearInterval(trollJobInt); btn.disabled=false; btn.textContent='💀 Troll Edit শুরু করো'; document.getElementById('trollBar').style.display='none';
+          trollTmpPath=null;
+          let msg='✅ সম্পন্ন!';
+          if(s.driveId) msg+=` <button class="btn-green" style="margin-left:6px;padding:5px 10px" onclick="showPreview('${s.driveId}')">👁 Preview</button>`;
+          if(s.youtubeUrl) msg+=` <a href="${s.youtubeUrl}" target="_blank" class="btn-add" style="text-decoration:none;padding:5px 10px">▶ YT</a>`;
+          document.getElementById('trollStatus').innerHTML=msg; document.getElementById('trollStatus').style.color='var(--green)';
+        }else if(s.status==='error'){
+          clearInterval(trollJobInt); btn.disabled=false; btn.textContent='💀 Troll Edit শুরু করো'; document.getElementById('trollBar').style.display='none';
+          document.getElementById('trollStatus').textContent='❌ '+s.error; document.getElementById('trollStatus').style.color='#fc8181';
+        }
+      }catch{}
+    },3000);
+  }catch(e){alert('❌ '+e.message);btn.disabled=false;btn.textContent='💀 Troll Edit শুরু করো';document.getElementById('trollBar').style.display='none';}
+}
+
+// ── MOVIE ─────────────────────────────────────────────────────────
+function switchMovieSrc(mode,el){
+  movieSrcMode=mode;
+  ['gallery','url','drive'].forEach(m=>{document.getElementById('ms-'+m).classList.toggle('on',m===mode);document.getElementById('ms-'+m+'-div').style.display=m===mode?'':'none';});
+}
+function renderGradeGrid(){
+  document.getElementById('gradeGrid').innerHTML=Object.keys(GRADE_LABELS).map(g=>`<div class="gbtn ${selectedGrade===g?'on':''}" onclick="selectGrade('${g}')">${GRADE_LABELS[g]}</div>`).join('');
+}
+function selectGrade(g){selectedGrade=g;renderGradeGrid();}
+
+async function onMovieVidSelected(input){
+  const file=input.files[0];if(!file)return;
+  movieTmpPath=null;
+  document.getElementById('movieVidStatus').textContent='⏳ Server upload হচ্ছে... '+file.name+' ('+( file.size/1024/1024).toFixed(1)+'MB)';
+  document.getElementById('movieVidStatus').style.color='var(--muted)';
+  const fd=new FormData(); fd.append('video',file,file.name);
+  try{
+    const r=await fetch('/api/movie/upload',{method:'POST',body:fd});
+    const d=await r.json();
+    if(d.success){movieTmpPath=d.tmpPath;document.getElementById('movieVidStatus').textContent='✅ Ready: '+file.name;document.getElementById('movieVidStatus').style.color='var(--green)';}
+    else{document.getElementById('movieVidStatus').textContent='❌ '+d.error;document.getElementById('movieVidStatus').style.color='#fc8181';}
+  }catch(e){document.getElementById('movieVidStatus').textContent='❌ '+e.message;document.getElementById('movieVidStatus').style.color='#fc8181';}
+}
+
+async function loadMoviePhonks(){
+  const list=await(await fetch('/api/phonk')).json();
+  const sel=document.getElementById('moviePhonkSel');
+  sel.innerHTML='<option value="">— Phonk ছাড়া (dialog থাকবে) —</option>'+list.map(p=>`<option value="${p.name}">${p.name}</option>`).join('');
+}
+
+async function startMovie(){
+  const outFolder=document.getElementById('movieOutFolder').value.trim();
+  const body={
+    clipDuration:parseInt(document.getElementById('clipDur').value)||60,
+    clipCount:parseInt(document.getElementById('clipCount').value)||5,
+    colorGrade:selectedGrade,
+    headBob:document.getElementById('headBobToggle').checked,
+    headBobIntensity:parseFloat(document.getElementById('hbInt').value)||2,
+    dialogVol:parseFloat(document.getElementById('dialogVol').value)||1,
+    phonkName:document.getElementById('moviePhonkSel').value||null,
+    phonkLoop:document.getElementById('moviePhonkLoop').checked,
+    musicVol:0.8,
+    outputFolder:outFolder||null
+  };
+  if(movieSrcMode==='gallery'){if(!movieTmpPath){alert('Gallery থেকে video upload করো!');return;}body.tmpPath=movieTmpPath;}
+  else if(movieSrcMode==='url'){const url=document.getElementById('movieUrl').value.trim();if(!url){alert('URL দাও!');return;}body.url=url;}
+  else{const id=document.getElementById('movieDriveId').value.trim();if(!id){alert('Drive File ID দাও!');return;}body.driveFileId=id;}
+
+  const btn=document.getElementById('movieBtn'); btn.disabled=true; btn.textContent='⏳ শুরু হচ্ছে...';
+  document.getElementById('movieBar').style.display='block';
+  document.getElementById('movieFill').style.width='5%';
+  document.getElementById('movieResult').innerHTML='';
+
+  try{
+    const r=await fetch('/api/movie/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(!d.success){alert('❌ '+d.error);btn.disabled=false;btn.textContent='🎬 Slicer শুরু করো';document.getElementById('movieBar').style.display='none';return;}
+    const jobId=d.jobId;
+    if(movieJobInt)clearInterval(movieJobInt);
+    movieJobInt=setInterval(async()=>{
+      try{
+        const s=await(await fetch('/api/movie/job/'+jobId)).json();
+        document.getElementById('movieFill').style.width=(s.progress||5)+'%';
+        document.getElementById('movieStep').textContent=s.step||s.status;
+        if(s.status==='done'){
+          clearInterval(movieJobInt); btn.disabled=false; btn.textContent='🎬 Slicer শুরু করো'; document.getElementById('movieBar').style.display='none'; movieTmpPath=null;
+          const btns=(s.clips||[]).map(c=>`<button class="btn-green" style="margin:3px" onclick="showPreview('${c.id}')">👁 Clip ${c.clip}</button>`).join('');
+          document.getElementById('movieResult').innerHTML=`<div class="chip-ok" style="margin-bottom:6px">✅ ${s.totalClips}টি Clip তৈরি হয়েছে</div><div>${btns}</div>`;
+        }else if(s.status==='error'){
+          clearInterval(movieJobInt); btn.disabled=false; btn.textContent='🎬 Slicer শুরু করো'; document.getElementById('movieBar').style.display='none';
+          document.getElementById('movieResult').innerHTML=`<div class="chip-err">❌ ${s.error}</div>`;
+        }
+      }catch{}
+    },2500);
+  }catch(e){alert('❌ '+e.message);btn.disabled=false;btn.textContent='🎬 Slicer শুরু করো';document.getElementById('movieBar').style.display='none';}
+}
+
+// ── PHONK ─────────────────────────────────────────────────────────
+function switchPhonkAdd(mode,el){
+  phonkAddMode=mode;
+  ['file','yt'].forEach(m=>{document.getElementById('pa-'+m).classList.toggle('on',m===mode);document.getElementById('pa-'+m+'-div').style.display=m===mode?'':'none';});
+}
+function onPhonkFileSelected(input){
+  const file=input.files[0]; if(!file)return;
+  phonkSelectedFile=file;
+  document.getElementById('phonkFileName').textContent='✅ '+file.name+' ('+(file.size/1024/1024).toFixed(1)+'MB)';
+  document.getElementById('phonkFileName').style.color='var(--green)';
+}
 async function loadPhonks(){
   try{
-    const list=await(await fetch('/api/phonk/list')).json();
+    const list=await(await fetch('/api/phonk')).json();
     document.getElementById('phonkBadge').textContent=list.length;
     const div=document.getElementById('phonkList');
     if(!list.length){div.innerHTML='<p style="color:var(--muted);font-size:12px;text-align:center;padding:8px">Phonk নেই</p>';return;}
-    div.innerHTML=list.map(p=>`<div class="phonk-item">
-      <div class="phonk-info"><div class="phonk-name">${p.name}</div><div class="phonk-meta">Drop: ${p.dropTime}s | ${(p.duration||0).toFixed(1)}s</div></div>
-      <button class="btn-sm btn-danger" onclick="deletePhonk('${encodeURIComponent(p.name)}')">✕</button>
+    div.innerHTML=list.map(p=>`<div class="phitem">
+      <div style="flex:1"><div class="phname">${p.name}</div><div class="phmeta">Drop: ${p.dropTime}s | ${(p.duration||0).toFixed(1)}s</div></div>
+      <button class="btn-danger" onclick="deletePhonk('${encodeURIComponent(p.name)}')">✕</button>
     </div>`).join('');
   }catch{}
 }
 async function addPhonk(){
-  const url=document.getElementById('phonkUrl').value.trim();
   const name=document.getElementById('phonkName').value.trim();
   const drop=parseFloat(document.getElementById('phonkDrop').value)||0;
-  if(!url||!name){alert('URL আর নাম দাও!');return;}
-  const btn=document.getElementById('phonkBtn');
-  btn.disabled=true;
-  document.getElementById('phonkProgress').style.display='block';
-  document.getElementById('phonkStep').textContent='Download শুরু হচ্ছে...';
+  if(!name){alert('নাম দাও!');return;}
+
+  const btn=document.getElementById('phonkAddBtn'); btn.disabled=true;
+  document.getElementById('phonkBar').style.display='block';
+  document.getElementById('phonkAddStatus').textContent='⏳ শুরু হচ্ছে...';
+  document.getElementById('phonkAddStatus').style.color='var(--muted)';
+
   try{
-    const r=await fetch('/api/phonk/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ytUrl:url,name,dropTime:drop})});
-    const d=await r.json();
-    if(!d.success){alert('❌ '+d.error);btn.disabled=false;document.getElementById('phonkProgress').style.display='none';return;}
-    const jobId=d.jobId;
-    const poll=setInterval(async()=>{
-      const s=await(await fetch('/api/phonk/status/'+jobId)).json();
-      document.getElementById('phonkStep').textContent=s.status==='downloading'?'⏳ Downloading...':s.status==='done'?'✅ সম্পন্ন!':'❌ '+s.error;
-      if(s.status==='done'){clearInterval(poll);btn.disabled=false;document.getElementById('phonkProgress').style.display='none';document.getElementById('phonkUrl').value='';document.getElementById('phonkName').value='';loadPhonks();}
-      else if(s.status==='error'){clearInterval(poll);btn.disabled=false;document.getElementById('phonkProgress').style.display='none';alert('❌ '+s.error);}
-    },3000);
-  }catch(e){alert('❌ '+e.message);btn.disabled=false;document.getElementById('phonkProgress').style.display='none';}
+    if(phonkAddMode==='file'){
+      if(!phonkSelectedFile){alert('File বেছে নাও!');btn.disabled=false;document.getElementById('phonkBar').style.display='none';return;}
+      const fd=new FormData(); fd.append('audio',phonkSelectedFile,phonkSelectedFile.name);
+      fd.append('name',name); fd.append('dropTime',String(drop));
+      document.getElementById('phonkAddStatus').textContent='⏳ Upload হচ্ছে...';
+      const r=await fetch('/api/phonk/file',{method:'POST',body:fd});
+      const d=await r.json();
+      if(d.success){document.getElementById('phonkAddStatus').textContent='✅ '+d.phonk.name+' ('+d.phonk.duration.toFixed(1)+'s)';document.getElementById('phonkAddStatus').style.color='var(--green)';phonkSelectedFile=null;document.getElementById('phonkFileName').textContent='';document.getElementById('phonkName').value='';loadPhonks();}
+      else{document.getElementById('phonkAddStatus').textContent='❌ '+d.error;document.getElementById('phonkAddStatus').style.color='#fc8181';}
+    }else{
+      const ytUrl=document.getElementById('phonkYtUrl').value.trim();
+      if(!ytUrl){alert('YouTube URL দাও!');btn.disabled=false;document.getElementById('phonkBar').style.display='none';return;}
+      const r=await fetch('/api/phonk/yt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ytUrl,name,dropTime:drop})});
+      const d=await r.json();
+      if(!d.success){alert('❌ '+d.error);btn.disabled=false;document.getElementById('phonkBar').style.display='none';return;}
+      document.getElementById('phonkAddStatus').textContent='⏳ Downloading (1-2 min)...';
+      const poll=setInterval(async()=>{
+        const s=await(await fetch('/api/phonk/job/'+d.jobId)).json();
+        if(s.status==='done'){clearInterval(poll);document.getElementById('phonkAddStatus').textContent='✅ '+s.phonk.name;document.getElementById('phonkAddStatus').style.color='var(--green)';btn.disabled=false;document.getElementById('phonkBar').style.display='none';document.getElementById('phonkName').value='';loadPhonks();}
+        else if(s.status==='error'){clearInterval(poll);document.getElementById('phonkAddStatus').textContent='❌ '+s.error;document.getElementById('phonkAddStatus').style.color='#fc8181';btn.disabled=false;document.getElementById('phonkBar').style.display='none';}
+      },3000);
+      return; // don't re-enable btn yet
+    }
+  }catch(e){document.getElementById('phonkAddStatus').textContent='❌ '+e.message;document.getElementById('phonkAddStatus').style.color='#fc8181';}
+  btn.disabled=false; document.getElementById('phonkBar').style.display='none';
 }
 async function deletePhonk(name){if(!confirm(decodeURIComponent(name)+' delete?'))return;await fetch('/api/phonk/'+name,{method:'DELETE'});loadPhonks();}
 
-// ===== MOVIE SLICER =====
-async function loadMoviePhonks(){
-  try{
-    const list=await(await fetch('/api/phonk/list')).json();
-    const sel=document.getElementById('moviePhonk');
-    const cur=sel.value;
-    sel.innerHTML='<option value="">— Phonk use করবো না —</option>'+list.map(p=>`<option value="${p.name}">${p.name} (${(p.duration||0).toFixed(1)}s, drop:${p.dropTime}s)</option>`).join('');
-    if(cur) sel.value=cur;
-  }catch{}
-}
-const GRADE_LABELS={'none':'None','teal_orange':'🎬 Teal-Orange','moody':'🌑 Moody','warm_film':'🔥 Warm Film','cold_blue':'🧊 Cold Blue','vintage':'🎞 Vintage','neon_noir':'⚡ Neon Noir','golden_hour':'🌅 Golden','dream':'✨ Dream'};
-function renderGradeGrid(){
-  const grades=Object.keys(GRADE_LABELS);
-  document.getElementById('gradeGrid').innerHTML=grades.map(g=>`<div class="grade-btn ${selectedGrade===g?'active':''}" onclick="selectGrade('${g}')">${GRADE_LABELS[g]||g}</div>`).join('');
-}
-function selectGrade(g){selectedGrade=g;if(!config.movie)config.movie={};config.movie.colorGrade=g;saveConfig();renderGradeGrid();}
-
-async function startMovie(){
-  const url=document.getElementById('movieUrl').value.trim();
-  const folder=document.getElementById('movieFolder').value.trim();
-  const dur=parseInt(document.getElementById('clipDur').value)||60;
-  const cnt=parseInt(document.getElementById('clipCount').value)||5;
-  const headBob=document.getElementById('headBobToggle').checked;
-  const hbInt=parseInt(document.getElementById('headBobInt').value)||2;
-  const dialogVol=parseFloat(document.getElementById('dialogVol').value)||1;
-  const musicId=document.getElementById('musicFileId').value.trim()||null;
-  const musicVol=parseFloat(document.getElementById('musicVol').value)||0.5;
-
-  if(!url){alert('URL বা Drive File ID দাও!');return;}
-
-  const btn=document.getElementById('movieBtn');
-  btn.disabled=true;btn.textContent='⏳ শুরু হচ্ছে...';
-  document.getElementById('movieProgress').style.display='block';
-  document.getElementById('movieResult').innerHTML='';
-
-  // Determine if url is a Drive file ID or URL
-  const isDriveId = !url.startsWith('http') && url.length > 15 && !/\s/.test(url);
-
-  try{
-    const phonkName=document.getElementById('moviePhonk').value||null;
-    const phonkLoop=document.getElementById('moviePhonkLoop').checked;
-    const body={clipDuration:dur,clipCount:cnt,colorGrade:selectedGrade,headBob,headBobIntensity:hbInt,dialogVol,musicVol,outputFolderId:folder||null,musicFileId:musicId,phonkName,phonkLoop};
-    if(isDriveId) body.driveFileId=url; else body.url=url;
-
-    const r=await fetch('/api/movie/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const d=await r.json();
-    if(!d.success){alert('❌ '+d.error);btn.disabled=false;document.getElementById('movieProgress').style.display='none';return;}
-    movieJobId=d.jobId;
-    if(moviePollInterval)clearInterval(moviePollInterval);
-    moviePollInterval=setInterval(pollMovie,2000);
-  }catch(e){alert('❌ '+e.message);btn.disabled=false;document.getElementById('movieProgress').style.display='none';}
-}
-async function pollMovie(){
-  if(!movieJobId)return;
-  try{
-    const s=await(await fetch('/api/movie/status/'+movieJobId)).json();
-    document.getElementById('movieFill').style.width=(s.progress||0)+'%';
-    document.getElementById('movieStep').textContent=s.step||s.status;
-    if(s.status==='done'){
-      clearInterval(moviePollInterval);
-      document.getElementById('movieBtn').disabled=false;document.getElementById('movieBtn').textContent='🎬 Slicer শুরু করো';
-      document.getElementById('movieResult').innerHTML=`<div class="chip chip-ok">✅ ${s.totalClips}টি Clip তৈরি হয়েছে Drive এ</div>`;
-    }else if(s.status==='error'){
-      clearInterval(moviePollInterval);
-      document.getElementById('movieBtn').disabled=false;document.getElementById('movieBtn').textContent='🎬 Slicer শুরু করো';
-      document.getElementById('movieResult').innerHTML=`<div class="chip chip-err">❌ ${s.error}</div>`;
-    }
-  }catch{}
-}
-
-// ===== DOWNLOAD =====
-async function startSingleDl(){
-  const url=document.getElementById('dlUrl').value.trim();
+// ── DOWNLOAD ─────────────────────────────────────────────────────
+async function startDl(){
   const folder=document.getElementById('dlFolder').value.trim()||null;
-  if(!url){alert('URL দাও!');return;}
-  const btn=document.getElementById('dlBtn');btn.disabled=true;btn.textContent='⏳';
-  document.getElementById('dlStatus').textContent='শুরু হচ্ছে...';
-  const r=await fetch('/api/download/single',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url,folderId:folder})});
-  const d=await r.json();
-  if(!d.success){btn.disabled=false;btn.textContent='⬇️ Download করো';document.getElementById('dlStatus').textContent='❌ '+d.error;return;}
-  const jobId=d.jobId;
-  const poll=setInterval(async()=>{
-    const s=await(await fetch('/api/download/status/'+jobId)).json();
-    document.getElementById('dlStatus').textContent=s.status==='done'?'✅ সম্পন্ন!':s.status==='error'?'❌ '+s.error:'⏳ '+s.step;
-    if(s.status==='done'||s.status==='error'){clearInterval(poll);btn.disabled=false;btn.textContent='⬇️ Download করো';}
-  },2000);
-}
-async function startBulk(){
-  const folder=document.getElementById('bulkFolder').value.trim()||null;
-  const raw=document.getElementById('bulkLinks').value.trim();
-  const links=raw.split('\n').map(l=>l.trim()).filter(Boolean);
-  if(!links.length){alert('Links দাও!');return;}
-  const btn=document.getElementById('bulkBtn');btn.disabled=true;btn.textContent='⏳ চলছে...';
-  document.getElementById('bulkBar').style.display='block';
-  document.getElementById('bulkStatus').textContent='শুরু হচ্ছে ('+links.length+'টি)...';
-  const r=await fetch('/api/download/bulk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({links,folderId:folder})});
-  const d=await r.json();
-  if(!d.success){btn.disabled=false;btn.textContent='📦 Bulk শুরু করো';document.getElementById('bulkStatus').textContent='❌ '+d.error;return;}
-  const jobId=d.jobId;
-  const poll=setInterval(async()=>{
-    const s=await(await fetch('/api/download/status/'+jobId)).json();
-    const pct=Math.round(((s.success||0)+(s.failed||0))/links.length*100);
-    document.getElementById('bulkFill').style.width=pct+'%';
-    document.getElementById('bulkStatus').textContent=`${s.step||''} ✅${s.success||0} ❌${s.failed||0}`;
-    if(s.status==='done'||s.status==='error'){clearInterval(poll);btn.disabled=false;btn.textContent='📦 Bulk শুরু করো';}
-  },3000);
+  const raw=document.getElementById('dlLinks').value.trim();
+  const urls=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!urls.length){alert('Links দাও!');return;}
+  const btn=document.getElementById('dlBtn'); btn.disabled=true; btn.textContent='⏳ চলছে...';
+  document.getElementById('dlBar').style.display='block';
+  document.getElementById('dlStatus').textContent='শুরু হচ্ছে ('+urls.length+'টি)...';
+  document.getElementById('dlStatus').style.color='var(--muted)';
+  try{
+    const r=await fetch('/api/dl/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({urls,folderId:folder})});
+    const d=await r.json();
+    if(!d.success){alert('❌ '+d.error);btn.disabled=false;btn.textContent='⬇️ Download শুরু করো';document.getElementById('dlBar').style.display='none';return;}
+    const jobId=d.jobId;
+    if(dlJobInt)clearInterval(dlJobInt);
+    dlJobInt=setInterval(async()=>{
+      const s=await(await fetch('/api/dl/job/'+jobId)).json();
+      const pct=Math.round(((s.success||0)+(s.failed||0))/urls.length*100);
+      document.getElementById('dlFill').style.width=pct+'%';
+      document.getElementById('dlStatus').textContent=`${s.step||''} ✅${s.success||0} ❌${s.failed||0} / ${urls.length}`;
+      if(s.status==='done'){clearInterval(dlJobInt);btn.disabled=false;btn.textContent='⬇️ Download শুরু করো';}
+    },3000);
+  }catch(e){alert('❌ '+e.message);btn.disabled=false;btn.textContent='⬇️ Download শুরু করো';document.getElementById('dlBar').style.display='none';}
 }
 
-// Gallery Direct Upload
+// Gallery → Drive (client-side direct)
 async function startGalleryUpload(input){
-  const files=Array.from(input.files);
-  if(!files.length)return;
-  const folder=document.getElementById('galleryFolder').value.trim()||null;
-  const status=document.getElementById('galleryStatus');
-  // Get drive token from server
+  const files=Array.from(input.files); if(!files.length)return;
+  const folder=document.getElementById('galFolder').value.trim()||null;
+  const div=document.getElementById('galStatus'); div.innerHTML='';
   const tr=await fetch('/api/drive-token');
   const td=await tr.json();
-  if(!td.token){status.innerHTML='<span style="color:#fc8181">❌ Drive connect করো</span>';return;}
+  if(!td.token){div.innerHTML='<span style="color:#fc8181">❌ Drive connect করো</span>';return;}
   const token=td.token;
-  status.innerHTML='';
   for(let i=0;i<files.length;i++){
     const file=files[i];
-    const pct=Math.round((i/files.length)*100);
-    status.innerHTML+=`<div id="gstat-${i}" style="font-size:12px;margin-bottom:4px;color:var(--muted)">⏳ ${file.name}</div>`;
+    const id='gal-'+i;
+    div.innerHTML+=`<div id="${id}" style="font-size:12px;margin-bottom:4px;color:var(--muted)">⏳ ${file.name}</div>`;
     try{
-      // Client-side resumable upload directly to Drive API
       const meta=JSON.stringify({name:file.name,parents:folder?[folder]:[]});
-      const boundary='gallerybnd';
-      const init=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',{
-        method:'POST',
-        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json','X-Upload-Content-Type':file.type||'video/mp4','X-Upload-Content-Length':String(file.size)},
-        body:meta
-      });
-      if(!init.ok)throw new Error('Init failed: '+init.status);
-      const uploadUrl=init.headers.get('location');
-      const up=await fetch(uploadUrl,{method:'PUT',headers:{'Content-Type':file.type||'video/mp4','Content-Length':String(file.size)},body:file});
-      if(!up.ok)throw new Error('Upload failed: '+up.status);
-      document.getElementById('gstat-'+i).innerHTML=`<span style="color:var(--green)">✅ ${file.name}</span>`;
-    }catch(e){document.getElementById('gstat-'+i).innerHTML=`<span style="color:#fc8181">❌ ${file.name}: ${e.message}</span>`;}
+      const init=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',{method:'POST',headers:{Authorization:'Bearer '+token,'Content-Type':'application/json','X-Upload-Content-Type':file.type||'video/mp4','X-Upload-Content-Length':String(file.size)},body:meta});
+      if(!init.ok)throw new Error('Init: '+init.status);
+      const url=init.headers.get('location');
+      const up=await fetch(url,{method:'PUT',headers:{'Content-Type':file.type||'video/mp4','Content-Length':String(file.size)},body:file});
+      if(!up.ok)throw new Error('Upload: '+up.status);
+      document.getElementById(id).innerHTML=`<span style="color:var(--green)">✅ ${file.name}</span>`;
+    }catch(e){document.getElementById(id).innerHTML=`<span style="color:#fc8181">❌ ${file.name}: ${e.message}</span>`;}
   }
 }
 
-// ===== LOGS =====
+// ── LOGS ──────────────────────────────────────────────────────────
 async function loadLogs(){
-  try{const d=await(await fetch('/api/logs')).json();const box=document.getElementById('logBox');if(!d.logs?.length){box.innerHTML='<p class="log-line" style="color:var(--muted)">লগ নেই</p>';return;}box.innerHTML=d.logs.map(l=>`<p class="log-line ${l.includes('❌')||l.includes('Error')?'log-err':''}">${l}</p>`).join('');}catch{}
+  try{const d=await(await fetch('/api/logs')).json();const box=document.getElementById('logBox');if(!d.logs?.length){box.innerHTML='<p class="lline" style="color:var(--muted)">লগ নেই</p>';return;}box.innerHTML=d.logs.map(l=>`<p class="lline ${l.includes('❌')||l.includes('error')?'lerr':''}">${l}</p>`).join('');}catch{}
 }
 async function loadQueueInfo(){
-  try{const q=await(await fetch('/api/queue')).json();const div=document.getElementById('queueInfo');const keys=Object.keys(q);if(!keys.length){div.textContent='Queue খালি';return;}div.innerHTML=keys.map(k=>`<div style="margin-bottom:5px;padding:6px;background:#0a0d15;border-radius:6px;border:1px solid var(--border)"><span style="color:var(--accent);font-size:10px">${k.slice(0,25)}...</span><br>বাকি: <b style="color:#fff">${q[k].remaining}</b> | ব্যবহৃত: ${q[k].used}</div>`).join('');}catch{}
+  try{const q=await(await fetch('/api/queue')).json();const div=document.getElementById('qInfo');const keys=Object.keys(q);if(!keys.length){div.textContent='Queue খালি';return;}div.innerHTML=keys.map(k=>`<div style="margin-bottom:5px;padding:6px;background:#080c14;border-radius:6px;border:1px solid var(--border)"><span style="color:var(--accent);font-size:10px">${k.slice(0,25)}...</span><br>বাকি: <b style="color:#fff">${q[k].remaining}</b> | ব্যবহৃত: ${q[k].used}</div>`).join('');}catch{}
 }
 async function resetQueue(){if(!confirm('সব Queue reset?'))return;await fetch('/api/queue/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});alert('✅ Reset হয়েছে');loadQueueInfo();}
 
-// ===== AUTH =====
+// ── PREVIEW ───────────────────────────────────────────────────────
+function showPreview(driveId){
+  document.getElementById('previewVid').src='/api/preview/'+driveId;
+  document.getElementById('previewModal').classList.add('open');
+  document.getElementById('previewVid').play();
+}
+function closePreview(){
+  const v=document.getElementById('previewVid');v.pause();v.src='';
+  document.getElementById('previewModal').classList.remove('open');
+}
+
+// ── AUTH ──────────────────────────────────────────────────────────
 function connectYT(){window.open('/auth/youtube','_blank','width=500,height=600');}
 function connectDrive(){window.open('/auth/drive','_blank','width=500,height=600');}
 
-// ===== PHONK TAB SWITCH =====
-let phonkTabMode = 'file';
-let phonkSelectedFile = null;
-
-function switchPhonkTab(tab) {
-  phonkTabMode = tab;
-  document.getElementById('phonk-tab-file').className = 'tgt' + (tab==='file' ? ' active' : '');
-  document.getElementById('phonk-tab-url').className  = 'tgt' + (tab==='url'  ? ' active' : '');
-  document.getElementById('phonk-file-section').style.display = tab==='file' ? '' : 'none';
-  document.getElementById('phonk-url-section').style.display  = tab==='url'  ? '' : 'none';
-}
-
-function onPhonkFileSelected(input) {
-  const file = input.files[0];
-  if (!file) return;
-  phonkSelectedFile = file;
-  document.getElementById('phonkFileName').textContent = '✅ ' + file.name + ' (' + (file.size/1024/1024).toFixed(1) + 'MB)';
-}
-
-// Override addPhonk to handle both modes
-const _origAddPhonk = addPhonk;
-window.addPhonk = async function() {
-  if (phonkTabMode === 'file') {
-    await addPhonkFromFile();
-  } else {
-    await _origAddPhonk();
-  }
-};
-
-async function addPhonkFromFile() {
-  if (!phonkSelectedFile) { alert('আগে file বেছে নাও!'); return; }
-  const name = document.getElementById('phonkName').value.trim();
-  const drop = parseFloat(document.getElementById('phonkDrop').value) || 0;
-  if (!name) { alert('নাম দাও!'); return; }
-
-  const btn = document.getElementById('phonkBtn');
-  btn.disabled = true;
-  document.getElementById('phonkProgress').style.display = 'block';
-  document.getElementById('phonkStep').textContent = 'Upload হচ্ছে...';
-
-  try {
-    // Read file as base64
-    const base64 = await new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.onload = e => res(e.target.result);
-      reader.onerror = rej;
-      reader.readAsDataURL(phonkSelectedFile);
-    });
-
-    const r = await fetch('/api/phonk/upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ base64, name, dropTime: drop, mimeType: phonkSelectedFile.type })
-    });
-    const d = await r.json();
-    if (d.success) {
-      document.getElementById('phonkStep').textContent = '✅ সম্পন্ন! ' + d.phonk.duration.toFixed(1) + 's';
-      setTimeout(() => {
-        btn.disabled = false;
-        document.getElementById('phonkProgress').style.display = 'none';
-        document.getElementById('phonkName').value = '';
-        document.getElementById('phonkFileName').textContent = '';
-        phonkSelectedFile = null;
-        loadPhonks();
-      }, 1500);
-    } else {
-      alert('❌ ' + d.error);
-      btn.disabled = false;
-      document.getElementById('phonkProgress').style.display = 'none';
-    }
-  } catch(e) {
-    alert('❌ ' + e.message);
-    btn.disabled = false;
-    document.getElementById('phonkProgress').style.display = 'none';
-  }
-}
-
-// ===== MOVIE TAB SWITCH =====
-let movieTabMode = 'url';
-let movieUploadedDriveId = null;
-
-function switchMovieTab(tab) {
-  movieTabMode = tab;
-  document.getElementById('movie-tab-url').className     = 'tgt' + (tab==='url'     ? ' active' : '');
-  document.getElementById('movie-tab-gallery').className = 'tgt' + (tab==='gallery' ? ' active' : '');
-  document.getElementById('movie-url-section').style.display     = tab==='url'     ? '' : 'none';
-  document.getElementById('movie-gallery-section').style.display = tab==='gallery' ? '' : 'none';
-}
-
-async function onMovieFileSelected(input) {
-  const file = input.files[0];
-  if (!file) return;
-  document.getElementById('movieFileName').textContent = '📁 ' + file.name + ' (' + (file.size/1024/1024).toFixed(1) + 'MB)';
-  document.getElementById('movieUploadStatus').textContent = '⏳ Drive এ upload হচ্ছে...';
-  document.getElementById('movieUploadStatus').style.color = 'var(--muted)';
-
-  try {
-    const base64 = await new Promise((res, rej) => {
-      const reader = new FileReader();
-      reader.onload = e => res(e.target.result);
-      reader.onerror = rej;
-      reader.readAsDataURL(file);
-    });
-
-    const r = await fetch('/api/movie/upload-source', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ base64, fileName: file.name, mimeType: file.type })
-    });
-    const d = await r.json();
-    if (d.success) {
-      movieUploadedDriveId = d.driveFileId;
-      document.getElementById('movieUploadStatus').textContent = '✅ Drive এ সেভ হয়েছে! Slicer শুরু করো।';
-      document.getElementById('movieUploadStatus').style.color = 'var(--green)';
-    } else {
-      document.getElementById('movieUploadStatus').textContent = '❌ ' + d.error;
-      document.getElementById('movieUploadStatus').style.color = '#fc8181';
-    }
-  } catch(e) {
-    document.getElementById('movieUploadStatus').textContent = '❌ ' + e.message;
-    document.getElementById('movieUploadStatus').style.color = '#fc8181';
-  }
-}
-
-// ===== INIT =====
+// ── INIT ──────────────────────────────────────────────────────────
 renderGradeGrid();
 loadStatus();
 loadConfig();
