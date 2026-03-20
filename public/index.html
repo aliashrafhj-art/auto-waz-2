@@ -5,462 +5,474 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Auto Waz 2.0</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { background:#0a0a0f; color:#e0e0e0; font-family:'Segoe UI',sans-serif; min-height:100vh; padding-bottom:80px; }
-  
-  .header { background:linear-gradient(135deg,#1a0a2e,#0d1117); padding:16px; display:flex; align-items:center; gap:12px; border-bottom:1px solid #1e1e2e; position:sticky; top:0; z-index:100; }
-  .header-icon { width:40px; height:40px; background:#ff0000; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; }
-  .header h1 { font-size:18px; font-weight:700; color:#fff; }
-  .header p { font-size:11px; color:#888; }
-  .conn-dot { width:8px; height:8px; border-radius:50%; background:#444; display:inline-block; margin-right:4px; }
-  .conn-dot.on { background:#06d6a0; box-shadow:0 0 6px #06d6a0; }
-  .conn-status { margin-left:auto; display:flex; gap:10px; align-items:center; font-size:12px; color:#888; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#e0e0e0;font-family:'Segoe UI',sans-serif;min-height:100vh;padding-bottom:80px}
+.header{background:linear-gradient(135deg,#1a0a2e,#0d1117);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1e1e2e;position:sticky;top:0;z-index:100}
+.logo{width:38px;height:38px;background:#ff0000;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.header h1{font-size:17px;font-weight:700;color:#fff}
+.header p{font-size:10px;color:#888}
+.conn-bar{margin-left:auto;display:flex;gap:8px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:#333;display:inline-block;margin-right:3px;transition:.3s}
+.dot.on{background:#06d6a0;box-shadow:0 0 5px #06d6a0}
+.dot.fb-on{background:#1877f2;box-shadow:0 0 5px #1877f2}
+.conn-item{font-size:11px;color:#777;display:flex;align-items:center}
 
-  .card { background:#111827; border:1px solid #1e2535; border-radius:14px; margin:12px; padding:16px; }
-  .card-title { font-size:13px; font-weight:700; color:#aaa; margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-  
-  .toggle-row { display:flex; justify-content:space-between; align-items:center; }
-  .toggle-label { font-size:15px; font-weight:600; color:#fff; }
-  .toggle-sub { font-size:11px; color:#666; margin-top:2px; }
-  .toggle { position:relative; width:52px; height:28px; }
-  .toggle input { opacity:0; width:0; height:0; }
-  .slider { position:absolute; inset:0; background:#2a2a3e; border-radius:28px; cursor:pointer; transition:.3s; }
-  .slider:before { content:''; position:absolute; width:22px; height:22px; left:3px; top:3px; background:#555; border-radius:50%; transition:.3s; }
-  input:checked + .slider { background:#7c3aed; }
-  input:checked + .slider:before { transform:translateX(24px); background:#fff; }
+.card{background:#111827;border:1px solid #1e2535;border-radius:14px;margin:10px 12px;padding:14px}
+.card-title{font-size:12px;font-weight:700;color:#888;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
+.section-label{font-size:11px;color:#666;margin-bottom:5px;margin-top:10px}
 
-  .auth-row { display:flex; gap:8px; margin-bottom:8px; }
-  .btn { padding:10px 16px; border-radius:10px; border:none; font-size:13px; font-weight:600; cursor:pointer; transition:.2s; }
-  .btn-yt { background:#ff0000; color:#fff; flex:1; }
-  .btn-drive { background:#1a73e8; color:#fff; flex:1; }
-  .btn-primary { background:#7c3aed; color:#fff; width:100%; padding:14px; font-size:15px; border-radius:12px; border:none; cursor:pointer; margin-top:8px; font-weight:700; }
-  .btn-primary:disabled { opacity:.5; cursor:not-allowed; }
-  .btn-sm { padding:6px 12px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:none; }
-  .btn-add { background:#1e2535; color:#7c3aed; border:1px solid #7c3aed; }
-  .btn-danger { background:#2a1515; color:#ff4444; border:1px solid #ff4444; }
-  .btn-run { background:#064e3b; color:#06d6a0; border:1px solid #06d6a0; }
+.toggle-row{display:flex;justify-content:space-between;align-items:center}
+.tl{font-size:15px;font-weight:600;color:#fff}
+.ts{font-size:11px;color:#666;margin-top:2px}
+.toggle{position:relative;width:50px;height:26px}
+.toggle input{opacity:0;width:0;height:0}
+.slider{position:absolute;inset:0;background:#2a2a3e;border-radius:26px;cursor:pointer;transition:.3s}
+.slider:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#555;border-radius:50%;transition:.3s}
+input:checked+.slider{background:#7c3aed}
+input:checked+.slider:before{transform:translateX(24px);background:#fff}
 
-  .input { background:#0d1117; border:1px solid #2a2a3e; border-radius:10px; padding:10px 12px; color:#e0e0e0; font-size:13px; width:100%; outline:none; }
-  .input:focus { border-color:#7c3aed; }
-  .input-row { margin-bottom:10px; }
-  .input-label { font-size:11px; color:#888; margin-bottom:4px; }
+.btn{padding:10px 14px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn-yt{background:#ff0000;color:#fff;flex:1}
+.btn-drive{background:#1a73e8;color:#fff;flex:1}
+.btn-fb{background:#1877f2;color:#fff;flex:1}
+.btn-primary{background:#7c3aed;color:#fff;width:100%;padding:13px;font-size:15px;border-radius:12px;border:none;cursor:pointer;font-weight:700;margin-top:8px}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed}
+.btn-sm{padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none}
+.btn-add{background:#1e2535;color:#7c3aed;border:1px solid #333}
+.btn-danger{background:#2a1515;color:#ff4444;border:1px solid #3a2020}
+.btn-run{background:#064e3b;color:#06d6a0;border:1px solid #065f46}
+.btn-row{display:flex;gap:8px;margin-bottom:8px}
 
-  .day-grid { display:grid; grid-template-columns:1fr; gap:8px; }
-  .day-card { background:#0d1117; border:1px solid #1e2535; border-radius:12px; padding:12px; }
-  .day-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; cursor:pointer; }
-  .day-name { font-size:13px; font-weight:700; color:#c4b5fd; }
-  .day-status { font-size:11px; color:#555; }
-  .day-body { display:none; }
-  .day-body.open { display:block; }
-  .day-toggle { transform:rotate(0deg); transition:.2s; display:inline-block; color:#555; }
-  .day-toggle.open { transform:rotate(180deg); }
+.inp{background:#0d1117;border:1px solid #2a2a3e;border-radius:10px;padding:10px 12px;color:#e0e0e0;font-size:13px;width:100%;outline:none;transition:.2s}
+.inp:focus{border-color:#7c3aed}
+.sel{background:#0d1117;border:1px solid #2a2a3e;border-radius:10px;padding:10px 12px;color:#e0e0e0;font-size:13px;width:100%;outline:none}
 
-  .slots-list { display:flex; flex-direction:column; gap:6px; margin-bottom:8px; }
-  .slot-item { display:flex; align-items:center; gap:8px; background:#1a1a2e; border-radius:8px; padding:8px 12px; }
-  .slot-time { font-size:16px; font-weight:700; color:#7c3aed; min-width:60px; }
-  .slot-label { font-size:11px; color:#888; flex:1; }
-  .slot-actions { display:flex; gap:6px; align-items:center; }
-  .slot-toggle { position:relative; width:40px; height:22px; }
-  .slot-toggle input { opacity:0; width:0; height:0; }
-  .slot-slider { position:absolute; inset:0; background:#2a2a3e; border-radius:22px; cursor:pointer; transition:.3s; }
-  .slot-slider:before { content:''; position:absolute; width:16px; height:16px; left:3px; top:3px; background:#555; border-radius:50%; transition:.3s; }
-  input:checked + .slot-slider { background:#7c3aed; }
-  input:checked + .slot-slider:before { transform:translateX(18px); background:#fff; }
+.slot-item{display:flex;align-items:center;gap:8px;background:#0d1117;border-radius:8px;padding:8px 12px;margin-bottom:6px}
+.slot-time{font-size:15px;font-weight:700;color:#7c3aed;min-width:55px}
+.slot-ampm{font-size:11px;color:#666;flex:1}
+.s-toggle{position:relative;width:38px;height:20px}
+.s-toggle input{opacity:0;width:0;height:0}
+.s-slider{position:absolute;inset:0;background:#2a2a3e;border-radius:20px;cursor:pointer;transition:.3s}
+.s-slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#555;border-radius:50%;transition:.3s}
+input:checked+.s-slider{background:#7c3aed}
+input:checked+.s-slider:before{transform:translateX(18px);background:#fff}
 
-  .add-slot-row { display:flex; gap:8px; align-items:center; }
-  .time-input { background:#0d1117; border:1px solid #2a2a3e; border-radius:8px; padding:8px 10px; color:#e0e0e0; font-size:14px; width:120px; outline:none; }
-  .time-input:focus { border-color:#7c3aed; }
+.day-card{background:#0d1117;border:1px solid #1e2535;border-radius:12px;padding:12px;margin-bottom:8px}
+.day-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+.day-name{font-size:13px;font-weight:700;color:#c4b5fd}
+.day-body{display:none;margin-top:10px}
+.day-body.open{display:block}
+.chev{transition:.2s;color:#555;font-size:12px}
+.chev.open{transform:rotate(180deg)}
+.today-card{border-color:#7c3aed!important}
 
-  .log-box { background:#050810; border:1px solid #1e2535; border-radius:10px; padding:10px; max-height:180px; overflow-y:auto; font-family:monospace; font-size:11px; color:#4ade80; }
-  .log-box p { border-bottom:1px solid #0d1117; padding:3px 0; }
-  .log-box p.err { color:#f87171; }
+.target-btns{display:flex;gap:6px;margin-bottom:10px}
+.target-btn{flex:1;padding:8px;border-radius:8px;border:1px solid #2a2a3e;background:#0d1117;color:#666;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:.2s}
+.target-btn.active-yt{background:#1a0000;border-color:#ff0000;color:#ff5555}
+.target-btn.active-fb{background:#0a1628;border-color:#1877f2;color:#4fa3ff}
+.target-btn.active-both{background:#1a0a2e;border-color:#7c3aed;color:#c4b5fd}
 
-  .privacy-select { background:#0d1117; border:1px solid #2a2a3e; border-radius:10px; padding:10px 12px; color:#e0e0e0; font-size:13px; width:100%; outline:none; }
+.log-box{background:#050810;border:1px solid #1e2535;border-radius:10px;padding:8px;max-height:200px;overflow-y:auto;font-family:monospace;font-size:11px;color:#4ade80}
+.log-line{border-bottom:1px solid #0d1117;padding:2px 0;line-height:1.5}
+.log-err{color:#f87171}
 
-  .bottom-nav { position:fixed; bottom:0; left:0; right:0; background:#0d1117; border-top:1px solid #1e2535; display:flex; padding:8px 0 calc(8px + env(safe-area-inset-bottom)); z-index:99; }
-  .nav-btn { flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:6px; cursor:pointer; color:#555; font-size:10px; border:none; background:none; }
-  .nav-btn.active { color:#7c3aed; }
-  .nav-btn span:first-child { font-size:20px; }
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0d1117;border-top:1px solid #1e2535;display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:99}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px;cursor:pointer;color:#555;font-size:10px;border:none;background:none}
+.nav-btn.active{color:#7c3aed}
+.nav-btn span:first-child{font-size:19px}
+.tab{display:none}
+.tab.active{display:block}
 
-  .tab { display:none; }
-  .tab.active { display:block; }
-
-  .hint { font-size:11px; color:#555; margin-top:4px; }
-  .badge { background:#1e2535; color:#7c3aed; font-size:10px; padding:2px 8px; border-radius:20px; font-weight:600; }
-  .divider { border:none; border-top:1px solid #1e2535; margin:12px 0; }
-  .today-highlight { border:1px solid #7c3aed !important; }
+.badge{background:#1e2535;color:#7c3aed;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
+.hint{font-size:11px;color:#555;margin-top:4px}
+.page-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#0d1117;border-radius:8px;margin-bottom:6px;border:1px solid #1e2535}
+.page-item.selected{border-color:#1877f2}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="header-icon">▶</div>
-  <div>
-    <h1>Auto Waz 2.0</h1>
-    <p>Drive → YouTube Auto Scheduler</p>
-  </div>
-  <div class="conn-status">
-    <span><span class="conn-dot" id="ytDot"></span><span id="ytLabel">YT</span></span>
-    <span><span class="conn-dot" id="driveDot"></span><span id="driveLabel">Drive</span></span>
+  <div class="logo">▶</div>
+  <div><h1>Auto Waz 2.0</h1><p>Drive → YouTube / Facebook Auto</p></div>
+  <div class="conn-bar">
+    <div class="conn-item"><span class="dot" id="dDot"></span>Drive</div>
+    <div class="conn-item"><span class="dot" id="yDot"></span>YT</div>
+    <div class="conn-item"><span class="dot" id="fDot"></span>FB</div>
   </div>
 </div>
 
-<!-- TAB: HOME -->
+<!-- HOME TAB -->
 <div class="tab active" id="tab-home">
 
   <div class="card">
     <div class="toggle-row">
-      <div>
-        <div class="toggle-label">🔴 অটো শিডিউলার</div>
-        <div class="toggle-sub" id="schedStatus">বন্ধ আছে</div>
-      </div>
-      <label class="toggle"><input type="checkbox" id="mainToggle" onchange="toggleScheduler()"><span class="slider"></span></label>
+      <div><div class="tl">🔴 অটো শিডিউলার</div><div class="ts" id="schedSub">বন্ধ আছে</div></div>
+      <label class="toggle"><input type="checkbox" id="mainToggle" onchange="toggleSched()"><span class="slider"></span></label>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title">🔗 সংযোগ</div>
-    <div class="auth-row">
+    <div class="btn-row">
       <button class="btn btn-yt" onclick="connectYT()">▶ YouTube</button>
-      <button class="btn btn-drive" onclick="connectDrive()">📁 Google Drive</button>
+      <button class="btn btn-drive" onclick="connectDrive()">📁 Drive</button>
     </div>
-    <div id="channelInfo" style="font-size:12px;color:#888;text-align:center;margin-top:4px;"></div>
+    <button class="btn btn-fb" style="width:100%;margin-bottom:6px" onclick="connectFB()">📘 Facebook Page</button>
+    <div id="connInfo" style="font-size:11px;color:#888;text-align:center"></div>
   </div>
 
   <div class="card">
     <div class="card-title">⚙️ সেটিং</div>
-    <div class="input-row">
-      <div class="input-label">Privacy</div>
-      <select class="privacy-select" id="privacySelect">
-        <option value="public">🌍 Public</option>
-        <option value="private">🔒 Private</option>
-        <option value="unlisted">🔗 Unlisted</option>
-      </select>
+    <div class="section-label">Privacy (YouTube)</div>
+    <select class="sel" id="privacySel" onchange="onPrivacyChange()">
+      <option value="public">🌍 Public</option>
+      <option value="private">🔒 Private</option>
+      <option value="unlisted">🔗 Unlisted</option>
+    </select>
+    <div class="section-label" style="margin-top:10px">Default Upload Target</div>
+    <div class="target-btns">
+      <div class="target-btn" id="tgt-youtube" onclick="setTarget('youtube')">▶ YouTube</div>
+      <div class="target-btn" id="tgt-facebook" onclick="setTarget('facebook')">📘 Facebook</div>
+      <div class="target-btn" id="tgt-both" onclick="setTarget('both')">🔀 দুইটাই</div>
     </div>
   </div>
 
   <div class="card">
     <div class="card-title">🤖 Auto SEO (Grok AI)</div>
-    <div class="toggle-row" style="margin-bottom:12px">
-      <div>
-        <div class="toggle-label" style="font-size:14px">SEO চালু রাখো</div>
-        <div class="toggle-sub">Auto title, tags, hashtags বানাবে</div>
-      </div>
-      <label class="toggle"><input type="checkbox" id="seoToggle" onchange="toggleSEO()"><span class="slider"></span></label>
+    <div class="toggle-row" style="margin-bottom:10px">
+      <div><div class="tl" style="font-size:14px">SEO চালু</div><div class="ts">Auto title, tags, hashtags</div></div>
+      <label class="toggle"><input type="checkbox" id="seoToggle" onchange="onSEOToggle()"><span class="slider"></span></label>
     </div>
-    <div id="seoPanel">
-      <div class="input-row">
-        <div class="input-label">Grok API Key (x.ai)</div>
-        <input class="input" id="grokApiKey" type="password" placeholder="xai-xxxxxxxxxxxx" oninput="saveGrokKey(this.value)">
-      </div>
-      <div class="hint">🔑 console.x.ai থেকে API key নাও — Free tier আছে</div>
-      <div style="margin-top:10px;background:#0d1117;border-radius:8px;padding:10px;font-size:11px;color:#666;">
-        <div style="color:#c4b5fd;font-weight:700;margin-bottom:6px">SEO যা করবে:</div>
-        <div>✅ Trending Islamic title বানাবে</div>
-        <div>✅ Bengali tags যোগ করবে</div>
-        <div>✅ Viral Islamic hashtags দেবে</div>
-        <div>✅ Channel rank করাবে</div>
-        <div style="margin-top:6px;color:#555">API না থাকলে default Islamic tags ব্যবহার হবে</div>
-      </div>
-    </div>
+    <div class="section-label">Grok API Key (xai-...)</div>
+    <input class="inp" type="password" id="grokKey" placeholder="xai-xxxxxxxxxxxx" oninput="onGrokKey(this.value)">
+    <div class="hint">🔑 console.x.ai → Free tier আছে</div>
   </div>
 
   <div class="card">
-    <div class="card-title">⏰ সময় স্লট <span class="badge" id="slotCount">0</span></div>
-    <div class="slots-list" id="slotsList"></div>
-    <div class="add-slot-row">
-      <input type="time" class="time-input" id="newSlotTime" value="09:00">
-      <button class="btn btn-sm btn-add" onclick="addSlot()">+ যোগ করুন</button>
+    <div class="card-title">⏰ সময় স্লট <span class="badge" id="slotBadge">0</span></div>
+    <div id="slotsList"></div>
+    <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
+      <input type="time" class="inp" id="newTime" value="09:00" style="width:130px">
+      <button class="btn-sm btn-add" onclick="addSlot()">+ যোগ করুন</button>
     </div>
-    <div class="hint">সময়গুলো বাংলাদেশ সময় (UTC+6)</div>
+    <div class="hint">সময় বাংলাদেশ (UTC+6)</div>
   </div>
 
   <div class="card">
     <div class="card-title">▶ এখনই চালাও</div>
-    <div class="input-row">
-      <div class="input-label">Folder ID</div>
-      <input class="input" id="manualFolderId" placeholder="Drive Folder ID">
+    <div class="section-label">Drive Folder ID</div>
+    <input class="inp" id="nowFolder" placeholder="1mTQV-hDLW...">
+    <div class="section-label">Template (ঐচ্ছিক)</div>
+    <input class="inp" id="nowTemplate" placeholder="#shorts #viral #waz">
+    <div class="section-label">Target</div>
+    <div class="target-btns" id="nowTargetBtns">
+      <div class="target-btn" id="now-yt" onclick="setNowTarget('youtube')">▶ YouTube</div>
+      <div class="target-btn" id="now-fb" onclick="setNowTarget('facebook')">📘 Facebook</div>
+      <div class="target-btn" id="now-both" onclick="setNowTarget('both')">🔀 দুইটাই</div>
     </div>
-    <div class="input-row">
-      <div class="input-label">Template (ঐচ্ছিক)</div>
-      <input class="input" id="manualTemplate" placeholder="#shorts #viral">
-    </div>
-    <button class="btn-primary btn-run" onclick="runNow()" id="runNowBtn">🚀 এখনই আপলোড করো</button>
+    <button class="btn-primary" onclick="runNow()" id="runBtn">🚀 এখনই আপলোড করো</button>
   </div>
 
 </div>
 
-<!-- TAB: DAYS -->
+<!-- DAYS TAB -->
 <div class="tab" id="tab-days">
   <div class="card">
     <div class="card-title">📅 প্রতিদিনের ফোল্ডার</div>
-    <div class="day-grid" id="dayGrid"></div>
+    <div id="dayGrid"></div>
   </div>
 </div>
 
-<!-- TAB: LOGS -->
+<!-- FACEBOOK TAB -->
+<div class="tab" id="tab-fb">
+  <div class="card">
+    <div class="card-title">📘 Facebook Page</div>
+    <button class="btn btn-fb" style="width:100%;margin-bottom:12px" onclick="connectFB()">📘 Facebook Connect করো</button>
+    <div id="fbPageList"><p style="color:#555;font-size:12px;text-align:center">Connect করলে Page list দেখাবে</p></div>
+  </div>
+  <div class="card">
+    <div class="card-title">ℹ️ Facebook Setup গাইড</div>
+    <div style="font-size:12px;color:#888;line-height:1.8">
+      <div>১. <a href="https://developers.facebook.com" target="_blank" style="color:#4fa3ff">developers.facebook.com</a> এ যাও</div>
+      <div>২. নতুন App বানাও (Business type)</div>
+      <div>৩. Facebook Login product add করো</div>
+      <div>৪. App ID + Secret Railway এ দাও:</div>
+      <div style="background:#0d1117;padding:8px;border-radius:6px;margin:6px 0;font-family:monospace;font-size:11px;color:#06d6a0">FB_APP_ID=your_app_id<br>FB_APP_SECRET=your_secret</div>
+      <div>৫. Facebook Page থাকতে হবে (Personal profile না)</div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGS TAB -->
 <div class="tab" id="tab-logs">
   <div class="card">
-    <div class="card-title">📋 লগ <button class="btn-sm btn-add" style="margin-left:auto" onclick="loadLogs()">↻ রিফ্রেশ</button></div>
-    <div class="log-box" id="logBox"><p>লোড হচ্ছে...</p></div>
+    <div class="card-title">📋 লগ <button class="btn-sm btn-add" style="margin-left:6px" onclick="loadLogs()">↻</button></div>
+    <div class="log-box" id="logBox"><p class="log-line">লোড হচ্ছে...</p></div>
   </div>
   <div class="card">
-    <div class="card-title">📊 Queue</div>
-    <div id="queueInfo" style="font-size:12px;color:#888;"></div>
-    <button class="btn btn-sm btn-danger" style="margin-top:10px" onclick="resetQueue()">Queue Reset করো</button>
+    <div class="card-title">📊 Video Queue</div>
+    <div id="queueInfo" style="font-size:12px;color:#888;min-height:30px"></div>
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <button class="btn-sm btn-danger" onclick="resetQueue()">🗑 সব Reset</button>
+      <button class="btn-sm btn-add" onclick="loadQueue()">↻ Refresh</button>
+    </div>
   </div>
 </div>
 
-<!-- BOTTOM NAV -->
 <div class="bottom-nav">
   <button class="nav-btn active" onclick="showTab('home',this)"><span>🏠</span><span>হোম</span></button>
   <button class="nav-btn" onclick="showTab('days',this)"><span>📅</span><span>দিন</span></button>
+  <button class="nav-btn" onclick="showTab('fb',this)"><span>📘</span><span>Facebook</span></button>
   <button class="nav-btn" onclick="showTab('logs',this)"><span>📋</span><span>লগ</span></button>
 </div>
 
 <script>
-const DAYS_EN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const DAYS_BN = ['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+const DAYS_EN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const DAYS_BN=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
+let config={enabled:false,slots:[],privacy:'public',seoEnabled:true,grokApiKey:'',uploadTarget:'youtube',days:{}};
+let nowTarget='youtube';
 
-let config = { enabled:false, slots:[], privacy:'public', seoEnabled:true, grokApiKey:'', days:{} };
-
-function showTab(name, btn) {
+function showTab(n,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('tab-'+n).classList.add('active');
   btn.classList.add('active');
-  if(name==='logs') loadLogs();
-  if(name==='days') renderDayGrid();
+  if(n==='logs'){loadLogs();loadQueue();}
+  if(n==='days') renderDays();
+  if(n==='fb') loadFBPages();
 }
 
-async function loadStatus() {
-  try {
-    const r = await fetch('/api/status');
-    const d = await r.json();
-    document.getElementById('ytDot').className = 'conn-dot' + (d.youtube?' on':'');
-    document.getElementById('driveDot').className = 'conn-dot' + (d.drive?' on':'');
-    document.getElementById('ytLabel').textContent = d.youtube ? (d.channelName || 'YT') : 'YT';
-    if(d.channelName) document.getElementById('channelInfo').textContent = '📺 ' + d.channelName;
-  } catch {}
+async function loadStatus(){
+  try{
+    const d=await(await fetch('/api/status')).json();
+    document.getElementById('dDot').className='dot'+(d.drive?' on':'');
+    document.getElementById('yDot').className='dot'+(d.youtube?' on':'');
+    document.getElementById('fDot').className='dot'+(d.facebook?' fb-on':'');
+    let info='';
+    if(d.channelName) info+='▶ '+d.channelName+'  ';
+    if(d.fbPageName) info+='📘 '+d.fbPageName;
+    document.getElementById('connInfo').textContent=info;
+  }catch{}
 }
 
-async function loadConfig() {
-  try {
-    const r = await fetch('/api/config/full');
-    config = await r.json();
-    document.getElementById('mainToggle').checked = config.enabled;
-    document.getElementById('schedStatus').textContent = config.enabled ? '✅ চালু আছে' : 'বন্ধ আছে';
-    document.getElementById('privacySelect').value = config.privacy || 'public';
-    document.getElementById('seoToggle').checked = config.seoEnabled !== false;
-    if(config.grokApiKey) document.getElementById('grokApiKey').value = config.grokApiKey;
+async function loadCfg(){
+  try{
+    const r=await fetch('/api/config/full');
+    config=await r.json();
+    document.getElementById('mainToggle').checked=config.enabled;
+    document.getElementById('schedSub').textContent=config.enabled?'✅ চালু আছে':'বন্ধ আছে';
+    document.getElementById('privacySel').value=config.privacy||'public';
+    document.getElementById('seoToggle').checked=config.seoEnabled!==false;
+    if(config.grokApiKey) document.getElementById('grokKey').value=config.grokApiKey;
+    setTarget(config.uploadTarget||'youtube');
+    setNowTarget(config.uploadTarget||'youtube');
     renderSlots();
-    renderDayGrid();
-  } catch {}
+    renderDays();
+  }catch{}
 }
 
-async function saveConfig() {
-  await fetch('/api/config', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(config) });
+async function saveCfg(){
+  await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
 }
 
-function toggleScheduler() {
-  config.enabled = document.getElementById('mainToggle').checked;
-  document.getElementById('schedStatus').textContent = config.enabled ? '✅ চালু আছে' : 'বন্ধ আছে';
-  saveConfig();
+function toggleSched(){
+  config.enabled=document.getElementById('mainToggle').checked;
+  document.getElementById('schedSub').textContent=config.enabled?'✅ চালু আছে':'বন্ধ আছে';
+  saveCfg();
+}
+function onPrivacyChange(){config.privacy=document.getElementById('privacySel').value;saveCfg();}
+function onSEOToggle(){config.seoEnabled=document.getElementById('seoToggle').checked;saveCfg();}
+function onGrokKey(v){config.grokApiKey=v;saveCfg();}
+
+function setTarget(t){
+  config.uploadTarget=t;
+  ['youtube','facebook','both'].forEach(k=>{
+    const el=document.getElementById('tgt-'+k);
+    el.className='target-btn'+(t===k?' active-'+(k==='both'?'both':k==='facebook'?'fb':'yt'):'');
+  });
+  saveCfg();
+}
+function setNowTarget(t){
+  nowTarget=t;
+  ['youtube','facebook','both'].forEach(k=>{
+    const el=document.getElementById('now-'+k);
+    if(!el) return;
+    el.className='target-btn'+(t===k?' active-'+(k==='both'?'both':k==='facebook'?'fb':'yt'):'');
+  });
 }
 
-function renderSlots() {
-  const list = document.getElementById('slotsList');
-  const slots = config.slots || [];
-  document.getElementById('slotCount').textContent = slots.length;
-  if(!slots.length) { list.innerHTML = '<p style="color:#555;font-size:12px;text-align:center;padding:8px">কোনো সময় নেই</p>'; return; }
-  list.innerHTML = slots.map((s,i) => {
-    const [h,m] = s.time.split(':').map(Number);
-    const ampm = h < 12 ? 'সকাল' : h < 15 ? 'দুপুর' : h < 18 ? 'বিকাল' : 'রাত';
-    return `<div class="slot-item">
+// SLOTS
+function renderSlots(){
+  const list=document.getElementById('slotsList');
+  const slots=config.slots||[];
+  document.getElementById('slotBadge').textContent=slots.length;
+  if(!slots.length){list.innerHTML='<p style="color:#555;font-size:12px;text-align:center;padding:8px">কোনো সময় নেই</p>';return;}
+  list.innerHTML=slots.map((s,i)=>{
+    const [h,m]=s.time.split(':').map(Number);
+    const ap=h<6?'ভোর':h<12?'সকাল':h<15?'দুপুর':h<18?'বিকাল':h<21?'সন্ধ্যা':'রাত';
+    return`<div class="slot-item">
       <span class="slot-time">${s.time}</span>
-      <span class="slot-label">${ampm}</span>
-      <div class="slot-actions">
-        <label class="slot-toggle"><input type="checkbox" ${s.enabled?'checked':''} onchange="toggleSlot(${i},this.checked)"><span class="slot-slider"></span></label>
-        <button class="btn-sm btn-danger" onclick="removeSlot(${i})">✕</button>
-      </div>
+      <span class="slot-ampm">${ap}</span>
+      <label class="s-toggle"><input type="checkbox" ${s.enabled?'checked':''} onchange="toggleSlot(${i},this.checked)"><span class="s-slider"></span></label>
+      <button class="btn-sm btn-danger" style="padding:4px 8px" onclick="removeSlot(${i})">✕</button>
     </div>`;
   }).join('');
 }
-
-function addSlot() {
-  const t = document.getElementById('newSlotTime').value;
+function addSlot(){
+  const t=document.getElementById('newTime').value;
   if(!t) return;
-  if(!config.slots) config.slots = [];
-  if(config.slots.find(s=>s.time===t)) { alert('এই সময় ইতিমধ্যে আছে'); return; }
-  config.slots.push({ time:t, enabled:true });
+  if(!config.slots) config.slots=[];
+  if(config.slots.find(s=>s.time===t)){alert('এই সময় আছে');return;}
+  config.slots.push({time:t,enabled:true});
   config.slots.sort((a,b)=>a.time.localeCompare(b.time));
-  saveConfig();
-  renderSlots();
+  saveCfg(); renderSlots();
 }
+function removeSlot(i){config.slots.splice(i,1);saveCfg();renderSlots();}
+function toggleSlot(i,v){config.slots[i].enabled=v;saveCfg();}
 
-function removeSlot(i) {
-  config.slots.splice(i,1);
-  saveConfig();
-  renderSlots();
-}
-
-function toggleSlot(i, val) {
-  config.slots[i].enabled = val;
-  saveConfig();
-}
-
-function renderDayGrid() {
-  const grid = document.getElementById('dayGrid');
+// DAYS
+function renderDays(){
+  const grid=document.getElementById('dayGrid');
   if(!grid) return;
-  // Get today
-  const todayEN = new Date().toLocaleDateString('en-US',{weekday:'long',timeZone:'Asia/Dhaka'});
-  
-  grid.innerHTML = DAYS_EN.map((day,i) => {
-    const dc = (config.days || {})[day] || { folderId:'', template:'', enabled:true };
-    const isToday = day === todayEN;
-    return `<div class="day-card ${isToday?'today-highlight':''}">
-      <div class="day-header" onclick="toggleDay('day-body-${i}','day-chevron-${i}')">
-        <div>
+  const today=new Date().toLocaleDateString('en-US',{weekday:'long',timeZone:'Asia/Dhaka'});
+  grid.innerHTML=DAYS_EN.map((day,i)=>{
+    const dc=(config.days||{})[day]||{folderId:'',template:'',enabled:true,uploadTarget:''};
+    const isToday=day===today;
+    return`<div class="day-card ${isToday?'today-card':''}">
+      <div class="day-header" onclick="toggleDayBody(${i})">
+        <div style="display:flex;align-items:center;gap:8px">
           <span class="day-name">${DAYS_BN[i]}</span>
-          ${isToday?'<span class="badge" style="margin-left:6px">আজ</span>':''}
+          ${isToday?'<span class="badge">আজ</span>':''}
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:${dc.folderId?'#06d6a0':'#555'}">${dc.folderId?'✅ সেট':'⚠️ খালি'}</span>
+          <span style="font-size:11px;color:${dc.folderId?'#06d6a0':'#555'}">${dc.folderId?'✅':'⚠️'}</span>
           <label class="toggle" style="width:40px;height:22px" onclick="event.stopPropagation()">
-            <input type="checkbox" ${dc.enabled?'checked':''} onchange="toggleDayEnabled('${day}',this.checked)">
+            <input type="checkbox" ${dc.enabled?'checked':''} onchange="saveDayCfg('${day}','enabled',this.checked)">
             <span class="slider"></span>
           </label>
-          <span class="day-toggle" id="day-chevron-${i}">▼</span>
+          <span class="chev" id="chev-${i}">▼</span>
         </div>
       </div>
-      <div class="day-body" id="day-body-${i}">
-        <div class="input-row">
-          <div class="input-label">Drive Folder ID</div>
-          <input class="input" value="${dc.folderId||''}" placeholder="1mTQV-hDLWznbMe8H..." onchange="saveDayConfig('${day}','folderId',this.value)">
-        </div>
-        <div class="input-row">
-          <div class="input-label">Title/Caption Template</div>
-          <input class="input" value="${dc.template||''}" placeholder="#shorts #viral #waz" onchange="saveDayConfig('${day}','template',this.value)">
-        </div>
-        <div class="hint">{{name}} = ভিডিও ফাইলের নাম</div>
-        <div style="display:flex;gap:6px;margin-top:8px">
-          <button class="btn-sm btn-run" style="flex:1" onclick="runNowForDay('${day}')">▶ এখনই চালাও</button>
+      <div class="day-body" id="dbody-${i}">
+        <div class="section-label">Drive Folder ID</div>
+        <input class="inp" value="${dc.folderId||''}" placeholder="Folder ID..." oninput="saveDayCfg('${day}','folderId',this.value)">
+        <div class="section-label">Title Template</div>
+        <input class="inp" value="${dc.template||''}" placeholder="#shorts #viral #waz" oninput="saveDayCfg('${day}','template',this.value)">
+        <div class="section-label">Upload Target (খালি = global default)</div>
+        <select class="sel" onchange="saveDayCfg('${day}','uploadTarget',this.value)">
+          <option value="" ${!dc.uploadTarget?'selected':''}>Global default</option>
+          <option value="youtube" ${dc.uploadTarget==='youtube'?'selected':''}>▶ YouTube</option>
+          <option value="facebook" ${dc.uploadTarget==='facebook'?'selected':''}>📘 Facebook</option>
+          <option value="both" ${dc.uploadTarget==='both'?'selected':''}>🔀 দুইটাই</option>
+        </select>
+        <div style="display:flex;gap:6px;margin-top:10px">
+          <button class="btn-sm btn-run" style="flex:1" onclick="runDay('${day}')">▶ এখনই</button>
           <button class="btn-sm btn-add" style="flex:1" onclick="testFolder('${day}')">🔍 Test</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
-
-function toggleDay(bodyId, chevronId) {
-  const body = document.getElementById(bodyId);
-  const chev = document.getElementById(chevronId);
-  body.classList.toggle('open');
-  chev.classList.toggle('open');
+function toggleDayBody(i){
+  const b=document.getElementById('dbody-'+i);
+  const c=document.getElementById('chev-'+i);
+  b.classList.toggle('open');
+  c.classList.toggle('open');
+}
+function saveDayCfg(day,key,val){
+  if(!config.days) config.days={};
+  if(!config.days[day]) config.days[day]={folderId:'',template:'',enabled:true,uploadTarget:''};
+  config.days[day][key]=val;
+  saveCfg();
 }
 
-function toggleDayEnabled(day, val) {
-  if(!config.days) config.days = {};
-  if(!config.days[day]) config.days[day] = { folderId:'', template:'', enabled:true };
-  config.days[day].enabled = val;
-  saveConfig();
+async function runDay(day){
+  const dc=(config.days||{})[day]||{};
+  if(!dc.folderId){alert('Folder ID দাও!');return;}
+  const target=dc.uploadTarget||config.uploadTarget||'youtube';
+  const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId,template:dc.template,privacy:config.privacy,target})});
+  const d=await r.json();
+  if(d.success) alert('✅ Upload শুরু! লগ দেখো।');
+  else alert('❌ '+d.error);
 }
 
-function saveDayConfig(day, key, val) {
-  if(!config.days) config.days = {};
-  if(!config.days[day]) config.days[day] = { folderId:'', template:'', enabled:true };
-  config.days[day][key] = val;
-  saveConfig();
+async function testFolder(day){
+  const dc=(config.days||{})[day]||{};
+  if(!dc.folderId){alert('Folder ID দাও!');return;}
+  const r=await fetch('/api/test-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId})});
+  const d=await r.json();
+  if(d.success) alert(`✅ ${d.count}টি ভিডিও\n\n${d.sample.slice(0,3).join('\n')}`);
+  else alert('❌ '+d.error);
 }
 
-async function runNowForDay(day) {
-  const dc = (config.days||{})[day] || {};
-  if(!dc.folderId) { alert('আগে Folder ID দাও!'); return; }
-  const r = await fetch('/api/run-now', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ folderId:dc.folderId, template:dc.template, privacy:config.privacy||'public' }) });
-  const d = await r.json();
-  if(d.success) alert('✅ Upload শুরু হয়েছে! লগ দেখো।');
-  else alert('❌ ' + d.error);
+// RUN NOW
+async function runNow(){
+  const folderId=document.getElementById('nowFolder').value.trim();
+  const template=document.getElementById('nowTemplate').value.trim();
+  if(!folderId){alert('Folder ID দাও!');return;}
+  const btn=document.getElementById('runBtn');
+  btn.disabled=true;btn.textContent='⏳ চলছে...';
+  const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId,template,privacy:config.privacy,target:nowTarget})});
+  const d=await r.json();
+  btn.disabled=false;btn.textContent='🚀 এখনই আপলোড করো';
+  if(d.success) alert('✅ Upload শুরু! লগ ট্যাবে দেখো।');
+  else alert('❌ '+d.error);
 }
 
-async function runNow() {
-  const folderId = document.getElementById('manualFolderId').value.trim();
-  const template = document.getElementById('manualTemplate').value.trim();
-  if(!folderId) { alert('Folder ID দাও!'); return; }
-  document.getElementById('runNowBtn').disabled = true;
-  document.getElementById('runNowBtn').textContent = '⏳ চলছে...';
-  try {
-    const r = await fetch('/api/run-now', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ folderId, template, privacy:config.privacy||'public' }) });
-    const d = await r.json();
-    if(d.success) alert('✅ Upload শুরু হয়েছে! লগ ট্যাবে দেখো।');
-    else alert('❌ ' + d.error);
-  } catch(e) { alert('❌ ' + e.message); }
-  document.getElementById('runNowBtn').disabled = false;
-  document.getElementById('runNowBtn').textContent = '🚀 এখনই আপলোড করো';
+// LOGS
+async function loadLogs(){
+  const box=document.getElementById('logBox');
+  try{
+    const d=await(await fetch('/api/logs')).json();
+    if(!d.logs?.length){box.innerHTML='<p class="log-line" style="color:#555">লগ নেই</p>';return;}
+    box.innerHTML=d.logs.map(l=>`<p class="log-line ${l.includes('❌')||l.includes('Error')?'log-err':''}">${l}</p>`).join('');
+  }catch{}
 }
 
-async function loadLogs() {
-  try {
-    const r = await fetch('/api/logs');
-    const d = await r.json();
-    const box = document.getElementById('logBox');
-    if(!d.logs?.length) { box.innerHTML = '<p style="color:#555">কোনো লগ নেই</p>'; return; }
-    box.innerHTML = d.logs.map(l => `<p class="${l.includes('Error')||l.includes('❌')?'err':''}">${l}</p>`).join('');
-  } catch {}
+// QUEUE
+async function loadQueue(){
+  try{
+    const q=await(await fetch('/api/queue')).json();
+    const div=document.getElementById('queueInfo');
+    const keys=Object.keys(q);
+    if(!keys.length){div.textContent='Queue খালি';return;}
+    div.innerHTML=keys.map(k=>`<div style="margin-bottom:5px;padding:6px;background:#0d1117;border-radius:6px"><span style="color:#7c3aed;font-size:11px">${k.slice(0,25)}...</span><br><span style="color:#fff">বাকি: <b>${q[k].remaining}</b></span> | ব্যবহৃত: ${q[k].used}</div>`).join('');
+  }catch{}
+}
+async function resetQueue(){
+  if(!confirm('সব Queue reset করবেন?')) return;
+  await fetch('/api/queue/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
+  alert('✅ Reset হয়েছে');loadQueue();
 }
 
-async function loadQueueInfo() {
-  try {
-    const r = await fetch('/api/queue');
-    const q = await r.json();
-    const div = document.getElementById('queueInfo');
-    const keys = Object.keys(q);
-    if(!keys.length) { div.textContent = 'কোনো queue নেই'; return; }
-    div.innerHTML = keys.map(k => `<div style="margin-bottom:6px"><span style="color:#7c3aed">${k.substring(0,20)}...</span> — বাকি: <b style="color:#fff">${(q[k].remaining||[]).length}</b> | ব্যবহৃত: ${(q[k].used||[]).length}</div>`).join('');
-  } catch {}
+// FB PAGES
+async function loadFBPages(){
+  try{
+    const d=await(await fetch('/api/fb/pages')).json();
+    const div=document.getElementById('fbPageList');
+    if(!d.pages?.length){div.innerHTML='<p style="color:#555;font-size:12px;text-align:center">কোনো Page নেই — Connect করো</p>';return;}
+    div.innerHTML=d.pages.map(p=>`
+      <div class="page-item ${p.id===d.selectedId?'selected':''}">
+        <div><div style="font-size:13px;color:#fff">${p.name}</div><div style="font-size:11px;color:#666">ID: ${p.id}</div></div>
+        ${p.id===d.selectedId?'<span style="color:#1877f2;font-size:11px">✅ Selected</span>':'<button class="btn-sm btn-add" onclick="selectPage(\''+p.id+'\')">Select</button>'}
+      </div>`).join('');
+  }catch{}
+}
+async function selectPage(pageId){
+  const r=await fetch('/auth/facebook/select-page',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pageId})});
+  const d=await r.json();
+  if(d.success){alert('✅ '+d.pageName+' selected!');loadFBPages();loadStatus();}
+  else alert('❌ '+d.error);
 }
 
-async function resetQueue() {
-  if(!confirm('Queue reset করবেন?')) return;
-  await fetch('/api/queue/reset', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({}) });
-  alert('✅ Queue reset হয়েছে');
-  loadQueueInfo();
-}
+// OAUTH
+function connectYT(){window.open('/auth/youtube','_blank','width=500,height=600');}
+function connectDrive(){window.open('/auth/drive','_blank','width=500,height=600');}
+function connectFB(){window.open('/auth/facebook','_blank','width=500,height=700');}
 
-async function testFolder(day) {
-  const dc = (config.days||{})[day]||{};
-  if(!dc.folderId) { alert('আগে Folder ID দাও!'); return; }
-  try {
-    const r = await fetch('/api/test-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId})});
-    const d = await r.json();
-    if(d.success) alert(`✅ Folder OK!\n${d.count}টি ভিডিও পাওয়া গেছে\n\nSample:\n${d.sample.join('\n')}`);
-    else alert('❌ '+d.error);
-  } catch(e) { alert('❌ '+e.message); }
-}
-
-function connectYT() { window.open('/auth/youtube', '_blank', 'width=500,height=600'); }
-function connectDrive() { window.open('/auth/drive', '_blank', 'width=500,height=600'); }
-
-function toggleSEO() {
-  config.seoEnabled = document.getElementById('seoToggle').checked;
-  saveConfig();
-}
-function saveGrokKey(val) {
-  config.grokApiKey = val;
-  saveConfig();
-}
-
-// Privacy change
-document.getElementById('privacySelect').addEventListener('change', function() {
-  config.privacy = this.value;
-  saveConfig();
-});
-
-// Init
-loadStatus();
-loadConfig();
-loadQueueInfo();
-setInterval(loadStatus, 30000);
-setInterval(loadQueueInfo, 60000);
+// INIT
+loadStatus();loadCfg();
+setInterval(loadStatus,30000);
 </script>
 </body>
 </html>

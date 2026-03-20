@@ -177,7 +177,7 @@ function defaultDayConfig() { return {folderId:'',template:'',enabled:true}; }
 function defaultConfig() {
   const days = {};
   DAYS.forEach(d => { days[d] = defaultDayConfig(); });
-  return {enabled:false, slots:[], privacy:'public', seoEnabled:true, grokApiKey:'', days};
+  return {enabled:false, slots:[], privacy:'public', seoEnabled:true, grokApiKey:'', uploadTarget:'youtube', days};
 }
 function loadConfig() {
   const saved = readJSON(CONFIG_FILE, null);
@@ -363,12 +363,107 @@ function getDefaultSEO(cleanName, template) {
   };
 }
 
+
+// ========== FACEBOOK TOKEN ==========
+async function refreshFBToken() {
+  try {
+    const fetch = await getFetch();
+    const t = loadTokens();
+    if (!t.fb_access_token) return null;
+    // Exchange short-lived for long-lived token (60 days)
+    const r = await fetch(
+      `https://graph.facebook.com/v19.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.FB_APP_ID}&client_secret=${process.env.FB_APP_SECRET}&fb_exchange_token=${t.fb_access_token}`
+    );
+    const d = await r.json();
+    if (d.access_token) {
+      const updated = {...t, fb_access_token: d.access_token};
+      writeJSON(TOKEN_FILE, updated);
+      if (updated.drive_access_token) backupTokensToDrive(updated, updated.drive_access_token).catch(()=>{});
+      log('[TOKEN] Facebook refresh ✅ (long-lived)');
+      return d.access_token;
+    }
+    log('[TOKEN] FB refresh failed: '+JSON.stringify(d));
+  } catch(e) { log('[TOKEN] FB refresh error: '+e.message); }
+  return null;
+}
+
+async function getFBPageToken(userToken) {
+  try {
+    const fetch = await getFetch();
+    // Get all pages user manages
+    const r = await fetch(`https://graph.facebook.com/v19.0/me/accounts?access_token=${userToken}&fields=id,name,access_token`);
+    const d = await r.json();
+    if (d.data?.length) return d.data; // array of {id, name, access_token}
+    return [];
+  } catch(e) { log('[FB] Page fetch error: '+e.message); return []; }
+}
+
+async function getValidFBToken() {
+  const t = loadTokens();
+  if (!t.fb_access_token) return null;
+  // FB long-lived tokens last 60 days — refresh proactively
+  return t.fb_access_token;
+}
+
+// ========== FACEBOOK REELS UPLOAD ==========
+async function uploadToFacebook(tempFile, fileStat, title, description, pageId, pageToken) {
+  const fetch = await getFetch();
+
+  // Step 1: Initialize upload session
+  log('[FB] Reels upload শুরু...');
+  const initRes = await fetch(`https://graph.facebook.com/v19.0/${pageId}/video_reels`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      upload_phase: 'start',
+      access_token: pageToken
+    })
+  });
+  if (!initRes.ok) throw new Error('FB init: ' + (await initRes.text()).slice(0, 300));
+  const initData = await initRes.json();
+  const uploadSessionId = initData.video_id;
+  const uploadUrl = initData.upload_url;
+  if (!uploadSessionId || !uploadUrl) throw new Error('FB session ID নেই: ' + JSON.stringify(initData));
+
+  log(`[FB] Session: ${uploadSessionId}`);
+
+  // Step 2: Upload video binary
+  const upRes = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: {
+      'Authorization': `OAuth ${pageToken}`,
+      'offset': '0',
+      'file_size': String(fileStat.size),
+      'Content-Type': 'application/octet-stream'
+    },
+    body: fs.createReadStream(tempFile)
+  });
+  if (!upRes.ok) throw new Error('FB upload: ' + (await upRes.text()).slice(0, 300));
+
+  // Step 3: Finish and publish
+  const finishRes = await fetch(`https://graph.facebook.com/v19.0/${pageId}/video_reels`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      upload_phase: 'finish',
+      video_id: uploadSessionId,
+      access_token: pageToken,
+      video_state: 'PUBLISHED',
+      description: (title + '\n\n' + description).substring(0, 2200)
+    })
+  });
+  if (!finishRes.ok) throw new Error('FB finish: ' + (await finishRes.text()).slice(0, 300));
+  const finishData = await finishRes.json();
+  log(`[FB] ✅ Reels published! video_id: ${uploadSessionId}`);
+  return uploadSessionId;
+}
+
 // ========== UPLOAD CORE ==========
 let uploadRunning = false;
 let uploadStartTime = 0;
 const UPLOAD_TIMEOUT_MS = 15 * 60 * 1000; // 15 min
 
-async function runUpload(folderId, template, privacy) {
+async function runUpload(folderId, template, privacy, target) {
   // FIX: Timeout on stuck lock
   if (uploadRunning && (Date.now()-uploadStartTime) < UPLOAD_TIMEOUT_MS) {
     log('[UPLOAD] ইতিমধ্যে চলছে, skip');
@@ -427,31 +522,51 @@ async function runUpload(folderId, template, privacy) {
 
     log(`[SEO] "${finalTitle}"`);
 
-    // YT resumable init
-    const meta = {
-      snippet:{title:finalTitle, description:fullDesc, categoryId:'22', tags:finalTags, defaultLanguage:'bn', defaultAudioLanguage:'bn'},
-      status:{privacyStatus:privacy||'public', selfDeclaredMadeForKids:false, madeForKids:false}
-    };
-    const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
-      method:'POST',
-      headers:{'Authorization':`Bearer ${ytToken}`,'Content-Type':'application/json','X-Upload-Content-Type':'video/mp4','X-Upload-Content-Length':String(fileStat.size)},
-      body: JSON.stringify(meta)
-    });
-    if (!initRes.ok) throw new Error('YT init: '+(await initRes.text()).slice(0,300));
-    const uploadUrl = initRes.headers.get('location');
-    if (!uploadUrl) throw new Error('YT upload URL নেই');
+    const uploadTarget = target || cfg.uploadTarget || 'youtube';
+    let ytDone = false, fbDone = false;
 
-    // FIX: Stream upload from disk — no readFileSync OOM
-    log(`[UPLOAD] YouTube upload...`);
-    const upRes = await fetch(uploadUrl, {
-      method:'PUT',
-      headers:{'Content-Type':'video/mp4','Content-Length':String(fileStat.size)},
-      body: fs.createReadStream(tempFile)
-    });
-    if (!upRes.ok) throw new Error('YT upload: '+(await upRes.text()).slice(0,300));
-    const ytData = await upRes.json();
-    if (!ytData.id) throw new Error('No video ID: '+JSON.stringify(ytData).slice(0,200));
-    log(`[UPLOAD] ✅ https://youtu.be/${ytData.id} | "${finalTitle}"`);
+    // ===== YOUTUBE UPLOAD =====
+    if (uploadTarget === 'youtube' || uploadTarget === 'both') {
+      try {
+        const ytToken2 = await getValidYTToken();
+        if (!ytToken2) throw new Error('YouTube token নেই');
+        const meta = {
+          snippet:{title:finalTitle, description:fullDesc, categoryId:'22', tags:finalTags, defaultLanguage:'bn', defaultAudioLanguage:'bn'},
+          status:{privacyStatus:privacy||'public', selfDeclaredMadeForKids:false, madeForKids:false}
+        };
+        const initRes = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
+          method:'POST',
+          headers:{'Authorization':`Bearer ${ytToken2}`,'Content-Type':'application/json','X-Upload-Content-Type':'video/mp4','X-Upload-Content-Length':String(fileStat.size)},
+          body: JSON.stringify(meta)
+        });
+        if (!initRes.ok) throw new Error('YT init: '+(await initRes.text()).slice(0,300));
+        const uploadUrl = initRes.headers.get('location');
+        if (!uploadUrl) throw new Error('YT upload URL নেই');
+        log(`[UPLOAD] YouTube upload...`);
+        const upRes = await fetch(uploadUrl, {
+          method:'PUT',
+          headers:{'Content-Type':'video/mp4','Content-Length':String(fileStat.size)},
+          body: fs.createReadStream(tempFile)
+        });
+        if (!upRes.ok) throw new Error('YT upload: '+(await upRes.text()).slice(0,300));
+        const ytData = await upRes.json();
+        if (!ytData.id) throw new Error('No video ID');
+        log(`[UPLOAD] ✅ YouTube: https://youtu.be/${ytData.id}`);
+        ytDone = true;
+      } catch(e) { log(`[UPLOAD] ❌ YouTube: ${e.message}`); }
+    }
+
+    // ===== FACEBOOK REELS UPLOAD =====
+    if (uploadTarget === 'facebook' || uploadTarget === 'both') {
+      try {
+        const t = loadTokens();
+        if (!t.fb_page_id || !t.fb_page_token) throw new Error('Facebook Page connect করো');
+        await uploadToFacebook(tempFile, fileStat, finalTitle, fullDesc, t.fb_page_id, t.fb_page_token);
+        fbDone = true;
+      } catch(e) { log(`[UPLOAD] ❌ Facebook: ${e.message}`); }
+    }
+
+    if (!ytDone && !fbDone) throw new Error('সব platform এ upload fail হয়েছে');
 
   } catch(e) {
     log(`[UPLOAD] ❌ ${e.message}`);
@@ -483,7 +598,7 @@ setInterval(async () => {
       if (!firedSlots.has(slotKey) && Math.abs(bdMin-slotMin)<=1) {
         firedSlots.add(slotKey);
         log(`[SCHED] ⏰ ${slot.time} | ${today}`);
-        runUpload(dayCfg.folderId.trim(), dayCfg.template, cfg.privacy)
+        runUpload(dayCfg.folderId.trim(), dayCfg.template, cfg.privacy, dayCfg.uploadTarget||cfg.uploadTarget||'youtube')
           .catch(e=>log('[SCHED] Fatal: '+e.message));
         break;
       }
@@ -503,7 +618,15 @@ app.get('/health', (req,res) => res.json({status:'ok', time:getBDTime(), uptime:
 
 app.get('/api/status', (req,res) => {
   const t = loadTokens();
-  res.json({youtube:!!t.access_token, drive:!!t.drive_access_token, channelName:t.channel_name||null, uploadRunning, schedulerEnabled:loadConfig().enabled});
+  res.json({
+    youtube: !!t.access_token,
+    drive: !!t.drive_access_token,
+    facebook: !!t.fb_page_token,
+    channelName: t.channel_name||null,
+    fbPageName: t.fb_page_name||null,
+    uploadRunning,
+    schedulerEnabled: loadConfig().enabled
+  });
 });
 
 app.get('/api/config', (req,res) => {
@@ -532,7 +655,7 @@ app.post('/api/run-now', async (req,res) => {
   if (!folderId?.trim()) return res.status(400).json({error:'folderId দাও'});
   if (uploadRunning && (Date.now()-uploadStartTime)<UPLOAD_TIMEOUT_MS) return res.status(409).json({error:'Upload চলছে — লগ দেখো'});
   res.json({success:true, message:'Upload শুরু হচ্ছে...'});
-  runUpload(folderId.trim(), template, privacy).catch(()=>{});
+  runUpload(folderId.trim(), template, privacy, req.body.target).catch(()=>{});
 });
 
 app.get('/api/queue', (req,res) => {
@@ -611,6 +734,58 @@ app.get('/auth/drive/callback', async (req,res) => {
     log('[AUTH] Drive ✅');
     res.send(htmlMsg('✅ Google Drive সংযুক্ত!','#06d6a0'));
   } catch(e) { res.send(htmlMsg('❌ '+e.message,'red')); }
+});
+
+
+// ========== FACEBOOK OAUTH ==========
+app.get('/auth/facebook', (req,res) => {
+  if (!process.env.FB_APP_ID) return res.send(htmlMsg('❌ FB_APP_ID env নেই','red'));
+  const scopes = 'pages_manage_posts,pages_read_engagement,pages_show_list';
+  res.redirect(`https://www.facebook.com/v19.0/dialog/oauth?client_id=${process.env.FB_APP_ID}&redirect_uri=${encodeURIComponent(process.env.BASE_URL+'/auth/facebook/callback')}&scope=${scopes}&response_type=code`);
+});
+
+app.get('/auth/facebook/callback', async (req,res) => {
+  const {code, error} = req.query;
+  if (error) return res.send(htmlMsg('❌ '+error,'red'));
+  if (!code) return res.send(htmlMsg('❌ No code','red'));
+  try {
+    const fetch = await getFetch();
+    // Exchange code for token
+    const r = await fetch(`https://graph.facebook.com/v19.0/oauth/access_token?client_id=${process.env.FB_APP_ID}&client_secret=${process.env.FB_APP_SECRET}&redirect_uri=${encodeURIComponent(process.env.BASE_URL+'/auth/facebook/callback')}&code=${code}`);
+    const d = await r.json();
+    if (!d.access_token) throw new Error(JSON.stringify(d));
+    // Exchange for long-lived token
+    const llr = await fetch(`https://graph.facebook.com/v19.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${process.env.FB_APP_ID}&client_secret=${process.env.FB_APP_SECRET}&fb_exchange_token=${d.access_token}`);
+    const lld = await llr.json();
+    const longToken = lld.access_token || d.access_token;
+    // Get pages
+    const pages = await getFBPageToken(longToken);
+    if (!pages.length) throw new Error('কোনো Facebook Page পাওয়া যায়নি। আগে একটা Page বানাও।');
+    // Save first page by default (can be changed in UI)
+    const page = pages[0];
+    saveTokens({...loadTokens(), fb_access_token:longToken, fb_page_id:page.id, fb_page_token:page.access_token, fb_page_name:page.name, fb_all_pages:pages});
+    log('[AUTH] Facebook: '+page.name);
+    res.send(htmlMsg('✅ Facebook সংযুক্ত!','#1877f2', page.name + (pages.length>1 ? ` (+${pages.length-1} more pages)` : '')));
+  } catch(e) { res.send(htmlMsg('❌ '+e.message,'red')); }
+});
+
+// Select which FB page to use
+app.post('/auth/facebook/select-page', (req,res) => {
+  try {
+    const {pageId} = req.body;
+    const t = loadTokens();
+    const pages = t.fb_all_pages || [];
+    const page = pages.find(p=>p.id===pageId);
+    if (!page) return res.status(404).json({error:'Page পাওয়া যায়নি'});
+    saveTokens({...t, fb_page_id:page.id, fb_page_token:page.access_token, fb_page_name:page.name});
+    log('[AUTH] FB Page selected: '+page.name);
+    res.json({success:true, pageName:page.name});
+  } catch(e) { res.status(500).json({error:e.message}); }
+});
+
+app.get('/api/fb/pages', (req,res) => {
+  const t = loadTokens();
+  res.json({pages: t.fb_all_pages||[], selectedId: t.fb_page_id||null, selectedName: t.fb_page_name||null});
 });
 
 // ========== STARTUP ==========
