@@ -392,7 +392,7 @@ async function runMovieSlicer(jobId, opts) {
         // Fallback to yt-dlp
         const dlId = Date.now();
         const tplBase = path.join(DIR.temp, `yt_src_${dlId}`);
-        await execAsync(`yt-dlp -f "bestvideo[ext=mp4]+bestaudio/best[ext=mp4]/best" --merge-output-format mp4 --no-playlist -o "${tplBase}.%(ext)s" "${url}"`, { timeout: 300000 });
+        await execAsync(`yt-dlp -f "bestvideo[ext=mp4]+bestaudio/best[ext=mp4]/best" --merge-output-format mp4 --no-playlist --extractor-args "youtube:player_client=web_embedded" --no-check-certificates -o "${tplBase}.%(ext)s" "${url}"`, { timeout: 300000 });
         // Find the downloaded file
         const files = fs.readdirSync(DIR.temp).filter(f => f.startsWith(`yt_src_${dlId}`) && f.endsWith('.mp4'));
         if (!files.length) throw new Error('yt-dlp download failed');
@@ -527,7 +527,7 @@ async function downloadPhonk(ytUrl, name, dropTime) {
   const tmpMp3 = path.join(DIR.temp, `phonk_${id}.mp3`);
 
   log(`[PHONK] Downloading: ${ytUrl}`);
-  await execAsync(`yt-dlp -f "bestaudio/best" --extract-audio --audio-format mp3 --audio-quality 192K --no-playlist -o "${tmpTpl}" "${ytUrl}"`, { timeout: 120000 });
+  await execAsync(`yt-dlp -f "bestaudio/best" --extract-audio --audio-format mp3 --audio-quality 192K --no-playlist --extractor-args "youtube:player_client=web_embedded" --no-check-certificates -o "${tmpTpl}" "${ytUrl}"`, { timeout: 120000 });
 
   // Find output file (yt-dlp may name it differently)
   const found = fs.readdirSync(DIR.temp).filter(f => f.startsWith(`phonk_${id}`) && /\.(mp3|m4a|ogg|opus|webm)$/.test(f));
@@ -707,7 +707,7 @@ async function runDownload(jobId, url, driveFolderId, driveToken) {
 
     if (!downloaded) {
       const tpl = tmpFile.replace('.mp4', '.%(ext)s');
-      await execAsync(`yt-dlp -f "best[ext=mp4]/best" --merge-output-format mp4 --no-playlist -o "${tpl}" "${url}"`, { timeout: 180000 });
+      await execAsync(`yt-dlp -f "best[ext=mp4]/best" --merge-output-format mp4 --no-playlist --extractor-args "youtube:player_client=web_embedded" --no-check-certificates -o "${tpl}" "${url}"`, { timeout: 180000 });
       const files = fs.readdirSync(DIR.temp).filter(f => f.startsWith(path.basename(tmpFile, '.mp4')) && f.endsWith('.mp4'));
       if (files.length) tmpFile = path.join(DIR.temp, files[0]);
       if (!fs.existsSync(tmpFile)) throw new Error('Download failed');
@@ -735,7 +735,7 @@ async function runBulkDownload(jobId, links, folderId, driveToken) {
     let tmp = null;
     try {
       tmp = tmpPath('bulk', 'mp4');
-      await execAsync(`yt-dlp -f "best[ext=mp4]/best" --merge-output-format mp4 --no-playlist -o "${tmp.replace('.mp4', '.%(ext)s')}" "${url}"`, { timeout: 180000 });
+      await execAsync(`yt-dlp -f "best[ext=mp4]/best" --merge-output-format mp4 --no-playlist --extractor-args "youtube:player_client=web_embedded" --no-check-certificates -o "${tmp.replace('.mp4', '.%(ext)s')}" "${url}"`, { timeout: 180000 });
       const files = fs.readdirSync(DIR.temp).filter(f => f.startsWith(path.basename(tmp, '.mp4')) && f.endsWith('.mp4'));
       if (files.length) tmp = path.join(DIR.temp, files[0]);
       if (!fs.existsSync(tmp)) throw new Error('Download failed');
@@ -961,6 +961,8 @@ app.get('/api/skull/exists', (req, res) => res.json({ exists: fs.existsSync(path
 
 // Phonk routes
 app.get('/api/phonk/list', (req, res) => res.json(loadPhonks()));
+
+// Add phonk from YouTube URL
 app.post('/api/phonk/add', async (req, res) => {
   const { ytUrl, name, dropTime } = req.body;
   if (!ytUrl || !name) return res.status(400).json({ error: 'ytUrl, name দাও' });
@@ -970,6 +972,59 @@ app.post('/api/phonk/add', async (req, res) => {
   downloadPhonk(ytUrl, name, dropTime || 0)
     .then(p  => { phonkJobs[jobId] = { status: 'done',  phonk: p }; })
     .catch(e => { phonkJobs[jobId] = { status: 'error', error: e.message }; });
+});
+
+// Add phonk from direct file upload (base64)
+app.post('/api/phonk/upload', async (req, res) => {
+  try {
+    const { base64, name, dropTime, mimeType = 'audio/mpeg' } = req.body;
+    if (!base64 || !name) return res.status(400).json({ error: 'base64, name দাও' });
+    const driveToken = await getDriveToken();
+    if (!driveToken) return res.status(401).json({ error: 'Drive connect করো' });
+
+    // Save to temp
+    const ext     = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('ogg') ? 'ogg' : mimeType.includes('wav') ? 'wav' : 'mp3';
+    const tmpFile = tmpPath('phonk_up', ext);
+    const buf     = Buffer.from(base64.replace(/^data:[^;]+;base64,/, ''), 'base64');
+    fs.writeFileSync(tmpFile, buf);
+    log(`[PHONK] File upload: ${name} (${(buf.length/1024/1024).toFixed(1)}MB)`);
+
+    const duration = await getduration(tmpFile);
+
+    // Upload to Drive
+    const d = await driveUpload(tmpFile, `${name}.mp3`, null, driveToken, 'audio/mpeg');
+    cleanFiles(tmpFile);
+
+    const phonkData = { name, driveId: d.id, dropTime: parseFloat(dropTime) || 0, duration };
+    const phonks    = loadPhonks();
+    const idx       = phonks.findIndex(p => p.name === name);
+    if (idx >= 0) phonks[idx] = phonkData; else phonks.push(phonkData);
+    savePhonks(phonks);
+    log(`[PHONK] ✅ Uploaded: ${name} (${duration.toFixed(1)}s)`);
+    res.json({ success: true, phonk: phonkData });
+  } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// Movie source from file upload (base64) — for gallery
+app.post('/api/movie/upload-source', async (req, res) => {
+  try {
+    const { base64, fileName, mimeType = 'video/mp4' } = req.body;
+    if (!base64) return res.status(400).json({ error: 'base64 দাও' });
+    const driveToken = await getDriveToken();
+    if (!driveToken) return res.status(401).json({ error: 'Drive connect করো' });
+
+    const tmpFile = tmpPath('movie_src_up', 'mp4');
+    const buf     = Buffer.from(base64.replace(/^data:[^;]+;base64,/, ''), 'base64');
+    fs.writeFileSync(tmpFile, buf);
+    const sizeMB = (buf.length / 1024 / 1024).toFixed(1);
+    log(`[MOVIE] Source upload: ${fileName} (${sizeMB}MB)`);
+
+    // Upload to Drive temp folder
+    const d = await driveUpload(tmpFile, fileName || `movie_src_${Date.now()}.mp4`, null, driveToken, mimeType);
+    cleanFiles(tmpFile);
+    log(`[MOVIE] Source uploaded to Drive: ${d.id}`);
+    res.json({ success: true, driveFileId: d.id, name: d.name });
+  } catch (e) { res.status(500).json({ error: e.message }); }
 });
 app.get('/api/phonk/status/:id', (req, res) => {
   const j = phonkJobs[req.params.id];

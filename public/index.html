@@ -186,9 +186,26 @@ input[type=range]{flex:1;accent-color:var(--accent);height:4px}
   <div class="card">
     <div class="card-title">🎬 Movie Slicer</div>
 
-    <div class="label">Source URL বা Drive File ID</div>
-    <input class="inp" id="movieUrl" placeholder="https://... বা Drive File ID">
-    <div class="hint">Direct video URL, YouTube, Kuaishou, বা Drive File ID</div>
+    <!-- Movie source selector -->
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <div class="tgt active" id="movie-tab-url" onclick="switchMovieTab('url')">🔗 URL / Drive ID</div>
+      <div class="tgt" id="movie-tab-gallery" onclick="switchMovieTab('gallery')">📱 Gallery</div>
+    </div>
+
+    <div id="movie-url-section">
+      <div class="label">URL বা Drive File ID</div>
+      <input class="inp" id="movieUrl" placeholder="https://... বা Drive File ID">
+      <div class="hint">Direct video URL, YouTube, Kuaishou, বা Drive File ID</div>
+    </div>
+
+    <div id="movie-gallery-section" style="display:none">
+      <button class="btn btn-primary" style="background:linear-gradient(135deg,#0f7a4a,#00d4aa);color:#000;margin-bottom:6px" onclick="document.getElementById('movieFileInput').click()">
+        📱 Gallery থেকে Video বেছে নাও
+      </button>
+      <input type="file" id="movieFileInput" accept="video/*" style="display:none" onchange="onMovieFileSelected(this)">
+      <div id="movieFileName" style="font-size:11px;color:var(--muted);margin-bottom:4px"></div>
+      <div id="movieUploadStatus" style="font-size:11px;text-align:center"></div>
+    </div>
 
     <div class="label">Output Folder (Drive)</div>
     <input class="inp" id="movieFolder" placeholder="Output Drive Folder ID">
@@ -308,8 +325,27 @@ input[type=range]{flex:1;accent-color:var(--accent);height:4px}
     <div id="phonkList"></div>
     <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
     <div style="font-size:12px;color:#c4b5fd;font-weight:700;margin-bottom:8px">+ নতুন Phonk যোগ করো</div>
-    <div class="label">YouTube Link</div>
-    <input class="inp" id="phonkUrl" placeholder="https://youtube.com/watch?v=...">
+
+    <!-- Tab selector -->
+    <div style="display:flex;gap:6px;margin-bottom:10px">
+      <div class="tgt active" id="phonk-tab-file" onclick="switchPhonkTab('file')">📱 File Upload</div>
+      <div class="tgt" id="phonk-tab-url" onclick="switchPhonkTab('url')">🔗 YouTube URL</div>
+    </div>
+
+    <!-- File upload section -->
+    <div id="phonk-file-section">
+      <button class="btn btn-primary" style="background:linear-gradient(135deg,#0f7a4a,#00d4aa);color:#000;margin-bottom:8px" onclick="document.getElementById('phonkFileInput').click()">
+        📱 MP3/Audio file বেছে নাও
+      </button>
+      <input type="file" id="phonkFileInput" accept="audio/*,video/mp4" style="display:none" onchange="onPhonkFileSelected(this)">
+      <div id="phonkFileName" style="font-size:11px;color:var(--muted);margin-bottom:6px"></div>
+    </div>
+
+    <!-- YouTube URL section -->
+    <div id="phonk-url-section" style="display:none">
+      <div class="label">YouTube Link</div>
+      <input class="inp" id="phonkUrl" placeholder="https://youtube.com/watch?v=...">
+    </div>
     <div class="label">নাম</div>
     <input class="inp" id="phonkName" placeholder="Dark Phonk 1">
     <div class="label">Drop Time (সেকেন্ড) — phonk কত সেকেন্ড থেকে শুরু</div>
@@ -740,6 +776,130 @@ async function resetQueue(){if(!confirm('সব Queue reset?'))return;await fetc
 // ===== AUTH =====
 function connectYT(){window.open('/auth/youtube','_blank','width=500,height=600');}
 function connectDrive(){window.open('/auth/drive','_blank','width=500,height=600');}
+
+// ===== PHONK TAB SWITCH =====
+let phonkTabMode = 'file';
+let phonkSelectedFile = null;
+
+function switchPhonkTab(tab) {
+  phonkTabMode = tab;
+  document.getElementById('phonk-tab-file').className = 'tgt' + (tab==='file' ? ' active' : '');
+  document.getElementById('phonk-tab-url').className  = 'tgt' + (tab==='url'  ? ' active' : '');
+  document.getElementById('phonk-file-section').style.display = tab==='file' ? '' : 'none';
+  document.getElementById('phonk-url-section').style.display  = tab==='url'  ? '' : 'none';
+}
+
+function onPhonkFileSelected(input) {
+  const file = input.files[0];
+  if (!file) return;
+  phonkSelectedFile = file;
+  document.getElementById('phonkFileName').textContent = '✅ ' + file.name + ' (' + (file.size/1024/1024).toFixed(1) + 'MB)';
+}
+
+// Override addPhonk to handle both modes
+const _origAddPhonk = addPhonk;
+window.addPhonk = async function() {
+  if (phonkTabMode === 'file') {
+    await addPhonkFromFile();
+  } else {
+    await _origAddPhonk();
+  }
+};
+
+async function addPhonkFromFile() {
+  if (!phonkSelectedFile) { alert('আগে file বেছে নাও!'); return; }
+  const name = document.getElementById('phonkName').value.trim();
+  const drop = parseFloat(document.getElementById('phonkDrop').value) || 0;
+  if (!name) { alert('নাম দাও!'); return; }
+
+  const btn = document.getElementById('phonkBtn');
+  btn.disabled = true;
+  document.getElementById('phonkProgress').style.display = 'block';
+  document.getElementById('phonkStep').textContent = 'Upload হচ্ছে...';
+
+  try {
+    // Read file as base64
+    const base64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = e => res(e.target.result);
+      reader.onerror = rej;
+      reader.readAsDataURL(phonkSelectedFile);
+    });
+
+    const r = await fetch('/api/phonk/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base64, name, dropTime: drop, mimeType: phonkSelectedFile.type })
+    });
+    const d = await r.json();
+    if (d.success) {
+      document.getElementById('phonkStep').textContent = '✅ সম্পন্ন! ' + d.phonk.duration.toFixed(1) + 's';
+      setTimeout(() => {
+        btn.disabled = false;
+        document.getElementById('phonkProgress').style.display = 'none';
+        document.getElementById('phonkName').value = '';
+        document.getElementById('phonkFileName').textContent = '';
+        phonkSelectedFile = null;
+        loadPhonks();
+      }, 1500);
+    } else {
+      alert('❌ ' + d.error);
+      btn.disabled = false;
+      document.getElementById('phonkProgress').style.display = 'none';
+    }
+  } catch(e) {
+    alert('❌ ' + e.message);
+    btn.disabled = false;
+    document.getElementById('phonkProgress').style.display = 'none';
+  }
+}
+
+// ===== MOVIE TAB SWITCH =====
+let movieTabMode = 'url';
+let movieUploadedDriveId = null;
+
+function switchMovieTab(tab) {
+  movieTabMode = tab;
+  document.getElementById('movie-tab-url').className     = 'tgt' + (tab==='url'     ? ' active' : '');
+  document.getElementById('movie-tab-gallery').className = 'tgt' + (tab==='gallery' ? ' active' : '');
+  document.getElementById('movie-url-section').style.display     = tab==='url'     ? '' : 'none';
+  document.getElementById('movie-gallery-section').style.display = tab==='gallery' ? '' : 'none';
+}
+
+async function onMovieFileSelected(input) {
+  const file = input.files[0];
+  if (!file) return;
+  document.getElementById('movieFileName').textContent = '📁 ' + file.name + ' (' + (file.size/1024/1024).toFixed(1) + 'MB)';
+  document.getElementById('movieUploadStatus').textContent = '⏳ Drive এ upload হচ্ছে...';
+  document.getElementById('movieUploadStatus').style.color = 'var(--muted)';
+
+  try {
+    const base64 = await new Promise((res, rej) => {
+      const reader = new FileReader();
+      reader.onload = e => res(e.target.result);
+      reader.onerror = rej;
+      reader.readAsDataURL(file);
+    });
+
+    const r = await fetch('/api/movie/upload-source', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ base64, fileName: file.name, mimeType: file.type })
+    });
+    const d = await r.json();
+    if (d.success) {
+      movieUploadedDriveId = d.driveFileId;
+      document.getElementById('movieUploadStatus').textContent = '✅ Drive এ সেভ হয়েছে! Slicer শুরু করো।';
+      document.getElementById('movieUploadStatus').style.color = 'var(--green)';
+    } else {
+      document.getElementById('movieUploadStatus').textContent = '❌ ' + d.error;
+      document.getElementById('movieUploadStatus').style.color = '#fc8181';
+    }
+  } catch(e) {
+    document.getElementById('movieUploadStatus').textContent = '❌ ' + e.message;
+    document.getElementById('movieUploadStatus').style.color = '#fc8181';
+  }
+}
 
 // ===== INIT =====
 renderGradeGrid();
