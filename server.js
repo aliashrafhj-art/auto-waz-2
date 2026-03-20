@@ -357,7 +357,8 @@ const movieJobs = {};
 
 async function runMovieSlicer(jobId, opts) {
   const { url, driveFileId, clipDuration, clipCount, colorGrade, useHeadBob, headBobIntensity,
-          dialogVol, musicFileId, musicVol, outputFolderId, driveToken } = opts;
+          dialogVol, musicFileId, musicVol, outputFolderId, driveToken,
+          phonkName = null, phonkLoop = false } = opts;
   const job = movieJobs[jobId];
 
   const updateJob = (status, extra = {}) => {
@@ -417,6 +418,20 @@ async function runMovieSlicer(jobId, opts) {
       const mr = await fetch(`https://www.googleapis.com/drive/v3/files/${musicFileId}?alt=media`, { headers: { 'Authorization': `Bearer ${driveToken}` } });
       if (!mr.ok) throw new Error('Music Drive download failed');
       await new Promise((res, rej) => { const d = fs.createWriteStream(musicFile); mr.body.pipe(d); d.on('finish', res); d.on('error', rej); mr.body.on('error', rej); });
+    }
+
+    // === Download phonk if provided (overrides musicFileId) ===
+    let phonkInfo = null;
+    if (phonkName) {
+      const phonks = loadPhonks();
+      phonkInfo = phonks.find(p => p.name === phonkName);
+      if (phonkInfo) {
+        updateJob('processing', { step: 'Phonk download হচ্ছে...' });
+        if (musicFile) { cleanFiles(musicFile); musicFile = null; } // phonk replaces music
+        musicFile = tmpPath('phonk_movie', 'mp3');
+        await driveDownloadToFile(phonkInfo.driveId, musicFile);
+        log(`[MOVIE] Phonk loaded: ${phonkName}`);
+      }
     }
 
     // === Calculate clip segments ===
@@ -970,14 +985,16 @@ app.delete('/api/phonk/:name', (req, res) => {
 app.post('/api/movie/start', async (req, res) => {
   const { url, driveFileId, clipDuration = 60, clipCount = 5, colorGrade = 'teal_orange',
           headBob = true, headBobIntensity = 2, dialogVol = 1.0, musicFileId = null,
-          musicVol = 0.5, outputFolderId } = req.body;
+          musicVol = 0.5, outputFolderId,
+          phonkName = null, phonkLoop = false  // NEW: phonk support
+        } = req.body;
   if (!url && !driveFileId) return res.status(400).json({ error: 'url বা driveFileId দাও' });
   const driveToken = await getDriveToken();
   if (!driveToken) return res.status(401).json({ error: 'Drive connect করো' });
   const jobId = Date.now().toString();
   movieJobs[jobId] = { status: 'starting', progress: 0 };
   res.json({ success: true, jobId });
-  runMovieSlicer(jobId, { url, driveFileId, clipDuration, clipCount, colorGrade, useHeadBob: headBob, headBobIntensity, dialogVol, musicFileId, musicVol, outputFolderId, driveToken }).catch(() => {});
+  runMovieSlicer(jobId, { url, driveFileId, clipDuration, clipCount, colorGrade, useHeadBob: headBob, headBobIntensity, dialogVol, musicFileId, musicVol, outputFolderId, driveToken, phonkName, phonkLoop }).catch(() => {});
 });
 app.get('/api/movie/status/:id', (req, res) => {
   const j = movieJobs[req.params.id];
@@ -1081,5 +1098,25 @@ async function startup() {
   } catch (e) { log('⚠️ Startup: ' + e.message); }
 }
 
+// Install yt-dlp if not found
+async function ensureYtDlp() {
+  try {
+    await execAsync('yt-dlp --version');
+    log('[SETUP] yt-dlp ✅');
+  } catch {
+    log('[SETUP] yt-dlp নেই — install হচ্ছে...');
+    try {
+      await execAsync('curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp && chmod a+rx /usr/local/bin/yt-dlp', { timeout: 60000 });
+      log('[SETUP] yt-dlp install সম্পন্ন ✅');
+    } catch (e) {
+      try {
+        await execAsync('pip3 install yt-dlp 2>/dev/null || pip install yt-dlp', { timeout: 120000 });
+        log('[SETUP] yt-dlp pip install ✅');
+      } catch (e2) { log('[SETUP] yt-dlp install fail: ' + e2.message); }
+    }
+  }
+}
+
 startup();
+ensureYtDlp();
 app.listen(PORT, () => console.log(`Auto Waz 2.0 on port ${PORT}`));

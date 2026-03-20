@@ -229,8 +229,16 @@ input[type=range]{flex:1;accent-color:var(--accent);height:4px}
       <span class="range-label">2x</span>
     </div>
 
-    <div class="label">🎵 Background Music (Drive File ID, ঐচ্ছিক)</div>
-    <input class="inp" id="musicFileId" placeholder="Music Drive File ID">
+    <div class="label">🎵 Background Music — Phonk থেকে নাও (ঐচ্ছিক)</div>
+    <select class="sel" id="moviePhonk" style="margin-bottom:6px">
+      <option value="">— Phonk use করবো না —</option>
+    </select>
+    <div class="trow" style="margin-bottom:10px">
+      <div><div style="font-size:13px;color:#fff">Phonk Loop 🔁</div><div class="ts">On = video যত লম্বা হোক phonk চলবে</div></div>
+      <label class="stog"><input type="checkbox" id="moviePhonkLoop"><span class="sslider"></span></label>
+    </div>
+    <div class="label">অথবা Drive File ID (music)</div>
+    <input class="inp" id="musicFileId" placeholder="Music Drive File ID (phonk না থাকলে)">
     <div class="label">Music Volume</div>
     <div class="range-row">
       <span class="range-label">0</span>
@@ -394,6 +402,7 @@ function showTab(name,btn){
   btn.classList.add('active');
   if(name==='logs'){loadLogs();loadQueueInfo();}
   if(name==='troll'){loadPhonks();checkSkull();}
+  if(name==='movie') loadMoviePhonks();
   if(name==='days') renderDays();
 }
 
@@ -578,6 +587,15 @@ async function addPhonk(){
 async function deletePhonk(name){if(!confirm(decodeURIComponent(name)+' delete?'))return;await fetch('/api/phonk/'+name,{method:'DELETE'});loadPhonks();}
 
 // ===== MOVIE SLICER =====
+async function loadMoviePhonks(){
+  try{
+    const list=await(await fetch('/api/phonk/list')).json();
+    const sel=document.getElementById('moviePhonk');
+    const cur=sel.value;
+    sel.innerHTML='<option value="">— Phonk use করবো না —</option>'+list.map(p=>`<option value="${p.name}">${p.name} (${(p.duration||0).toFixed(1)}s, drop:${p.dropTime}s)</option>`).join('');
+    if(cur) sel.value=cur;
+  }catch{}
+}
 const GRADE_LABELS={'none':'None','teal_orange':'🎬 Teal-Orange','moody':'🌑 Moody','warm_film':'🔥 Warm Film','cold_blue':'🧊 Cold Blue','vintage':'🎞 Vintage','neon_noir':'⚡ Neon Noir','golden_hour':'🌅 Golden','dream':'✨ Dream'};
 function renderGradeGrid(){
   const grades=Object.keys(GRADE_LABELS);
@@ -607,7 +625,9 @@ async function startMovie(){
   const isDriveId = !url.startsWith('http') && url.length > 15 && !/\s/.test(url);
 
   try{
-    const body={clipDuration:dur,clipCount:cnt,colorGrade:selectedGrade,headBob,headBobIntensity:hbInt,dialogVol,musicVol,outputFolderId:folder||null,musicFileId:musicId};
+    const phonkName=document.getElementById('moviePhonk').value||null;
+    const phonkLoop=document.getElementById('moviePhonkLoop').checked;
+    const body={clipDuration:dur,clipCount:cnt,colorGrade:selectedGrade,headBob,headBobIntensity:hbInt,dialogVol,musicVol,outputFolderId:folder||null,musicFileId:musicId,phonkName,phonkLoop};
     if(isDriveId) body.driveFileId=url; else body.url=url;
 
     const r=await fetch('/api/movie/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
