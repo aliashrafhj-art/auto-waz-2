@@ -2,112 +2,135 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Auto Waz 2.0</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0a0a0f;color:#e0e0e0;font-family:'Segoe UI',sans-serif;min-height:100vh;padding-bottom:80px}
-.header{background:linear-gradient(135deg,#1a0a2e,#0d1117);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #1e1e2e;position:sticky;top:0;z-index:100}
-.logo{width:38px;height:38px;background:#ff0000;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.header h1{font-size:17px;font-weight:700;color:#fff}
-.header p{font-size:10px;color:#888}
-.conn-bar{margin-left:auto;display:flex;gap:8px;align-items:center}
-.dot{width:7px;height:7px;border-radius:50%;background:#333;display:inline-block;margin-right:3px;transition:.3s}
-.dot.on{background:#06d6a0;box-shadow:0 0 5px #06d6a0}
-.dot.fb-on{background:#1877f2;box-shadow:0 0 5px #1877f2}
-.conn-item{font-size:11px;color:#777;display:flex;align-items:center}
-
-.card{background:#111827;border:1px solid #1e2535;border-radius:14px;margin:10px 12px;padding:14px}
-.card-title{font-size:12px;font-weight:700;color:#888;margin-bottom:12px;text-transform:uppercase;letter-spacing:.5px}
-.section-label{font-size:11px;color:#666;margin-bottom:5px;margin-top:10px}
-
-.toggle-row{display:flex;justify-content:space-between;align-items:center}
-.tl{font-size:15px;font-weight:600;color:#fff}
-.ts{font-size:11px;color:#666;margin-top:2px}
-.toggle{position:relative;width:50px;height:26px}
-.toggle input{opacity:0;width:0;height:0}
-.slider{position:absolute;inset:0;background:#2a2a3e;border-radius:26px;cursor:pointer;transition:.3s}
-.slider:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#555;border-radius:50%;transition:.3s}
-input:checked+.slider{background:#7c3aed}
-input:checked+.slider:before{transform:translateX(24px);background:#fff}
-
-.btn{padding:10px 14px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:6px}
+:root{--bg:#07080f;--card:#0f1420;--border:#1a2035;--accent:#6c47ff;--accent2:#ff4785;--green:#00d4aa;--text:#e2e8f0;--muted:#4a5568;--warn:#f6ad55}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:72px;font-size:14px}
+/* HEADER */
+.hdr{background:linear-gradient(135deg,#0d1117,#1a0a2e);padding:14px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(10px)}
+.hdr-logo{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:grid;place-items:center;font-size:17px;flex-shrink:0}
+.hdr-info h1{font-size:16px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.hdr-info p{font-size:10px;color:var(--muted)}
+.hdr-dots{margin-left:auto;display:flex;gap:10px}
+.conn-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.dot{width:7px;height:7px;border-radius:50%;background:#2d3748;transition:all .3s}
+.dot.on{background:var(--green);box-shadow:0 0 6px var(--green)}
+/* TABS */
+.tab{display:none}.tab.active{display:block}
+/* NAV */
+.nav{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;padding:6px 0 calc(6px + env(safe-area-inset-bottom));z-index:100}
+.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:5px 0;cursor:pointer;color:var(--muted);font-size:9px;border:none;background:none;transition:color .2s}
+.nb.active{color:var(--accent)}
+.nb .icon{font-size:18px}
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;margin:10px 12px;padding:16px;transition:border-color .2s}
+.card-title{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+/* FORM */
+.label{font-size:11px;color:var(--muted);margin:10px 0 4px}
+.inp{background:#0a0d15;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;width:100%;outline:none;transition:border-color .2s}
+.inp:focus{border-color:var(--accent)}
+textarea.inp{resize:vertical;min-height:80px;font-family:inherit}
+.sel{background:#0a0d15;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:13px;width:100%;outline:none}
+/* BUTTONS */
+.btn{padding:11px 16px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-primary{background:linear-gradient(135deg,var(--accent),#8b5cf6);color:#fff;width:100%;padding:13px;font-size:14px;border-radius:12px;margin-top:8px;font-weight:700;letter-spacing:.2px}
+.btn-primary:hover:not(:disabled){filter:brightness(1.1)}
 .btn-yt{background:#ff0000;color:#fff;flex:1}
 .btn-drive{background:#1a73e8;color:#fff;flex:1}
-.btn-fb{background:#1877f2;color:#fff;flex:1}
-.btn-primary{background:#7c3aed;color:#fff;width:100%;padding:13px;font-size:15px;border-radius:12px;border:none;cursor:pointer;font-weight:700;margin-top:8px}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed}
-.btn-sm{padding:7px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none}
-.btn-add{background:#1e2535;color:#7c3aed;border:1px solid #333}
-.btn-danger{background:#2a1515;color:#ff4444;border:1px solid #3a2020}
-.btn-run{background:#064e3b;color:#06d6a0;border:1px solid #065f46}
+.btn-sm{padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none}
+.btn-danger{background:#2d1515;color:#fc8181;border:1px solid #3d2020}
+.btn-green{background:#0d2d1f;color:var(--green);border:1px solid #0f4a30}
+.btn-add{background:#1a2035;color:var(--accent);border:1px solid #2a3050}
 .btn-row{display:flex;gap:8px;margin-bottom:8px}
-
-.inp{background:#0d1117;border:1px solid #2a2a3e;border-radius:10px;padding:10px 12px;color:#e0e0e0;font-size:13px;width:100%;outline:none;transition:.2s}
-.inp:focus{border-color:#7c3aed}
-.sel{background:#0d1117;border:1px solid #2a2a3e;border-radius:10px;padding:10px 12px;color:#e0e0e0;font-size:13px;width:100%;outline:none}
-
-.slot-item{display:flex;align-items:center;gap:8px;background:#0d1117;border-radius:8px;padding:8px 12px;margin-bottom:6px}
-.slot-time{font-size:15px;font-weight:700;color:#7c3aed;min-width:55px}
-.slot-ampm{font-size:11px;color:#666;flex:1}
-.s-toggle{position:relative;width:38px;height:20px}
-.s-toggle input{opacity:0;width:0;height:0}
-.s-slider{position:absolute;inset:0;background:#2a2a3e;border-radius:20px;cursor:pointer;transition:.3s}
-.s-slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#555;border-radius:50%;transition:.3s}
-input:checked+.s-slider{background:#7c3aed}
-input:checked+.s-slider:before{transform:translateX(18px);background:#fff}
-
-.day-card{background:#0d1117;border:1px solid #1e2535;border-radius:12px;padding:12px;margin-bottom:8px}
-.day-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
+/* TOGGLE */
+.trow{display:flex;justify-content:space-between;align-items:center}
+.tl{font-size:15px;font-weight:600;color:#fff}
+.ts{font-size:11px;color:var(--muted);margin-top:2px}
+.tog{position:relative;width:50px;height:26px;flex-shrink:0}
+.tog input{opacity:0;width:0;height:0}
+.tslider{position:absolute;inset:0;background:#2d3748;border-radius:26px;cursor:pointer;transition:.3s}
+.tslider:before{content:'';position:absolute;width:20px;height:20px;left:3px;top:3px;background:#4a5568;border-radius:50%;transition:.3s}
+input:checked+.tslider{background:var(--accent)}
+input:checked+.tslider:before{transform:translateX(24px);background:#fff}
+/* SMALL TOGGLE */
+.stog{position:relative;width:40px;height:22px;flex-shrink:0}
+.stog input{opacity:0;width:0;height:0}
+.sslider{position:absolute;inset:0;background:#2d3748;border-radius:22px;cursor:pointer;transition:.3s}
+.sslider:before{content:'';position:absolute;width:16px;height:16px;left:3px;top:3px;background:#4a5568;border-radius:50%;transition:.3s}
+input:checked+.sslider{background:var(--accent)}
+input:checked+.sslider:before{transform:translateX(18px);background:#fff}
+/* SLIDER */
+.range-row{display:flex;align-items:center;gap:10px;margin-top:6px}
+.range-label{font-size:12px;color:var(--muted);min-width:40px;text-align:right}
+input[type=range]{flex:1;accent-color:var(--accent);height:4px}
+.range-val{font-size:12px;color:var(--accent);min-width:32px;font-weight:700}
+/* PROGRESS */
+.progress-bar{height:6px;background:#1a2035;border-radius:6px;overflow:hidden;margin:8px 0}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:6px;transition:width .5s}
+/* BADGE */
+.badge{background:var(--border);color:var(--accent);font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+/* SLOT ITEM */
+.slot-item{display:flex;align-items:center;gap:8px;background:#0a0d15;border-radius:8px;padding:8px 12px;margin-bottom:6px;border:1px solid var(--border)}
+.slot-time{font-size:15px;font-weight:700;color:var(--accent);min-width:58px}
+/* DAY CARD */
+.day-card{background:#0a0d15;border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;transition:border-color .2s}
+.day-card.today{border-color:var(--accent)}
+.day-hdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer}
 .day-name{font-size:13px;font-weight:700;color:#c4b5fd}
-.day-body{display:none;margin-top:10px}
+.day-body{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
 .day-body.open{display:block}
-.chev{transition:.2s;color:#555;font-size:12px}
+.chev{transition:transform .2s;color:var(--muted);font-size:11px}
 .chev.open{transform:rotate(180deg)}
-.today-card{border-color:#7c3aed!important}
-
-.target-btns{display:flex;gap:6px;margin-bottom:10px}
-.target-btn{flex:1;padding:8px;border-radius:8px;border:1px solid #2a2a3e;background:#0d1117;color:#666;font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:.2s}
-.target-btn.active-yt{background:#1a0000;border-color:#ff0000;color:#ff5555}
-.target-btn.active-fb{background:#0a1628;border-color:#1877f2;color:#4fa3ff}
-.target-btn.active-both{background:#1a0a2e;border-color:#7c3aed;color:#c4b5fd}
-
-.log-box{background:#050810;border:1px solid #1e2535;border-radius:10px;padding:8px;max-height:200px;overflow-y:auto;font-family:monospace;font-size:11px;color:#4ade80}
-.log-line{border-bottom:1px solid #0d1117;padding:2px 0;line-height:1.5}
-.log-err{color:#f87171}
-
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0d1117;border-top:1px solid #1e2535;display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:99}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px;cursor:pointer;color:#555;font-size:10px;border:none;background:none}
-.nav-btn.active{color:#7c3aed}
-.nav-btn span:first-child{font-size:19px}
-.tab{display:none}
-.tab.active{display:block}
-
-.badge{background:#1e2535;color:#7c3aed;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600}
-.hint{font-size:11px;color:#555;margin-top:4px}
-.page-item{display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:#0d1117;border-radius:8px;margin-bottom:6px;border:1px solid #1e2535}
-.page-item.selected{border-color:#1877f2}
+/* TARGET SELECTOR */
+.targets{display:flex;gap:6px;margin-bottom:10px}
+.tgt{flex:1;padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:#0a0d15;color:var(--muted);font-size:12px;font-weight:600;cursor:pointer;text-align:center;transition:all .2s}
+.tgt.active{background:#1a0a2e;border-color:var(--accent);color:#c4b5fd}
+/* LOG */
+.log-box{background:#050810;border:1px solid var(--border);border-radius:10px;padding:8px;max-height:220px;overflow-y:auto;font-family:'Courier New',monospace;font-size:11px;color:#4ade80}
+.log-line{border-bottom:1px solid #0a0d15;padding:2px 0;line-height:1.6;word-break:break-all}
+.log-err{color:#fc8181}
+/* PHONK ITEM */
+.phonk-item{display:flex;align-items:center;gap:10px;background:#0a0d15;border-radius:10px;padding:10px 12px;margin-bottom:8px;border:1px solid var(--border)}
+.phonk-info{flex:1}
+.phonk-name{font-size:13px;color:#c4b5fd;font-weight:700}
+.phonk-meta{font-size:11px;color:var(--muted);margin-top:2px}
+/* COLOR GRADE */
+.grade-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px}
+.grade-btn{padding:8px 4px;border-radius:8px;border:1px solid var(--border);background:#0a0d15;color:var(--muted);font-size:11px;cursor:pointer;text-align:center;transition:all .2s}
+.grade-btn.active{border-color:var(--accent);color:var(--accent);background:#100a2e}
+/* SKULL PREVIEW */
+.skull-preview{width:80px;height:80px;border-radius:12px;border:2px dashed var(--border);display:grid;place-items:center;font-size:32px;cursor:pointer;transition:border-color .2s}
+.skull-preview:hover{border-color:var(--accent)}
+.skull-preview img{width:100%;height:100%;object-fit:contain;border-radius:10px}
+/* STATUS CHIP */
+.chip{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-run{background:#0a2010;color:var(--green);border:1px solid #0f4a30}
+.chip-err{background:#2d1515;color:#fc8181;border:1px solid #3d2020}
+.chip-ok {background:#0a2010;color:var(--green);border:1px solid #0f4a30}
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo">▶</div>
-  <div><h1>Auto Waz 2.0</h1><p>Drive → YouTube / Facebook Auto</p></div>
-  <div class="conn-bar">
-    <div class="conn-item"><span class="dot" id="dDot"></span>Drive</div>
-    <div class="conn-item"><span class="dot" id="yDot"></span>YT</div>
-    <div class="conn-item"><span class="dot" id="fDot"></span>FB</div>
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-logo">▶</div>
+  <div class="hdr-info"><h1>Auto Waz 2.0</h1><p>Video Automation Tool</p></div>
+  <div class="hdr-dots">
+    <div class="conn-item"><span class="dot" id="dDot"></span><span id="dLbl">Drive</span></div>
+    <div class="conn-item"><span class="dot" id="yDot"></span><span id="yLbl">YT</span></div>
   </div>
 </div>
 
-<!-- HOME TAB -->
+<!-- ============ TAB: HOME ============ -->
 <div class="tab active" id="tab-home">
-
   <div class="card">
-    <div class="toggle-row">
-      <div><div class="tl">🔴 অটো শিডিউলার</div><div class="ts" id="schedSub">বন্ধ আছে</div></div>
-      <label class="toggle"><input type="checkbox" id="mainToggle" onchange="toggleSched()"><span class="slider"></span></label>
+    <div class="trow">
+      <div><div class="tl">⏰ Auto Scheduler</div><div class="ts" id="schedSub">বন্ধ আছে</div></div>
+      <label class="tog"><input type="checkbox" id="mainToggle" onchange="onMainToggle()"><span class="tslider"></span></label>
     </div>
   </div>
 
@@ -117,361 +140,591 @@ input:checked+.s-slider:before{transform:translateX(18px);background:#fff}
       <button class="btn btn-yt" onclick="connectYT()">▶ YouTube</button>
       <button class="btn btn-drive" onclick="connectDrive()">📁 Drive</button>
     </div>
-    <button class="btn btn-fb" style="width:100%;margin-bottom:6px" onclick="connectFB()">📘 Facebook Page</button>
-    <div id="connInfo" style="font-size:11px;color:#888;text-align:center"></div>
+    <div id="connInfo" style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px"></div>
   </div>
 
   <div class="card">
     <div class="card-title">⚙️ সেটিং</div>
-    <div class="section-label">Privacy (YouTube)</div>
-    <select class="sel" id="privacySel" onchange="onPrivacyChange()">
+    <div class="label">Privacy</div>
+    <select class="sel" id="privacySel" onchange="onPrivacy()">
       <option value="public">🌍 Public</option>
       <option value="private">🔒 Private</option>
       <option value="unlisted">🔗 Unlisted</option>
     </select>
-    <div class="section-label" style="margin-top:10px">Default Upload Target</div>
-    <div class="target-btns">
-      <div class="target-btn" id="tgt-youtube" onclick="setTarget('youtube')">▶ YouTube</div>
-      <div class="target-btn" id="tgt-facebook" onclick="setTarget('facebook')">📘 Facebook</div>
-      <div class="target-btn" id="tgt-both" onclick="setTarget('both')">🔀 দুইটাই</div>
-    </div>
   </div>
 
   <div class="card">
-    <div class="card-title">🤖 Auto SEO (Grok AI)</div>
-    <div class="toggle-row" style="margin-bottom:10px">
-      <div><div class="tl" style="font-size:14px">SEO চালু</div><div class="ts">Auto title, tags, hashtags</div></div>
-      <label class="toggle"><input type="checkbox" id="seoToggle" onchange="onSEOToggle()"><span class="slider"></span></label>
-    </div>
-    <div class="section-label">Grok API Key (xai-...)</div>
-    <input class="inp" type="password" id="grokKey" placeholder="xai-xxxxxxxxxxxx" oninput="onGrokKey(this.value)">
-    <div class="hint">🔑 console.x.ai → Free tier আছে</div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">⏰ সময় স্লট <span class="badge" id="slotBadge">0</span></div>
-    <div id="slotsList"></div>
+    <div class="card-title">⏱ Time Slots <span class="badge" id="slotBadge">0</span></div>
+    <div id="slotList"></div>
     <div style="display:flex;gap:8px;align-items:center;margin-top:4px">
-      <input type="time" class="inp" id="newTime" value="09:00" style="width:130px">
+      <input type="time" class="inp" id="newTime" value="09:00" style="flex:1">
       <button class="btn-sm btn-add" onclick="addSlot()">+ যোগ করুন</button>
     </div>
-    <div class="hint">সময় বাংলাদেশ (UTC+6)</div>
+    <div class="hint">সময় — বাংলাদেশ (UTC+6)</div>
   </div>
 
   <div class="card">
-    <div class="card-title">▶ এখনই চালাও</div>
-    <div class="section-label">Drive Folder ID</div>
-    <input class="inp" id="nowFolder" placeholder="1mTQV-hDLW...">
-    <div class="section-label">Template (ঐচ্ছিক)</div>
-    <input class="inp" id="nowTemplate" placeholder="#shorts #viral #waz">
-    <div class="section-label">Target</div>
-    <div class="target-btns" id="nowTargetBtns">
-      <div class="target-btn" id="now-yt" onclick="setNowTarget('youtube')">▶ YouTube</div>
-      <div class="target-btn" id="now-fb" onclick="setNowTarget('facebook')">📘 Facebook</div>
-      <div class="target-btn" id="now-both" onclick="setNowTarget('both')">🔀 দুইটাই</div>
-    </div>
-    <button class="btn-primary" onclick="runNow()" id="runBtn">🚀 এখনই আপলোড করো</button>
+    <div class="card-title">🚀 এখনই চালাও</div>
+    <div class="label">Folder ID</div>
+    <input class="inp" id="nowFolder" placeholder="Drive Folder ID...">
+    <div class="label">Template (ঐচ্ছিক)</div>
+    <input class="inp" id="nowTemplate" placeholder="#shorts #viral">
+    <button class="btn btn-primary" onclick="runNow()" id="runBtn">🚀 Upload শুরু করো</button>
   </div>
-
 </div>
 
-<!-- DAYS TAB -->
+<!-- ============ TAB: DAYS ============ -->
 <div class="tab" id="tab-days">
   <div class="card">
-    <div class="card-title">📅 প্রতিদিনের ফোল্ডার</div>
+    <div class="card-title">📅 প্রতিদিনের Folder</div>
     <div id="dayGrid"></div>
   </div>
 </div>
 
-<!-- FACEBOOK TAB -->
-<div class="tab" id="tab-fb">
+<!-- ============ TAB: MOVIE ============ -->
+<div class="tab" id="tab-movie">
   <div class="card">
-    <div class="card-title">📘 Facebook Page</div>
-    <button class="btn btn-fb" style="width:100%;margin-bottom:12px" onclick="connectFB()">📘 Facebook Connect করো</button>
-    <div id="fbPageList"><p style="color:#555;font-size:12px;text-align:center">Connect করলে Page list দেখাবে</p></div>
+    <div class="card-title">🎬 Movie Slicer</div>
+
+    <div class="label">Source URL বা Drive File ID</div>
+    <input class="inp" id="movieUrl" placeholder="https://... বা Drive File ID">
+    <div class="hint">Direct video URL, YouTube, Kuaishou, বা Drive File ID</div>
+
+    <div class="label">Output Folder (Drive)</div>
+    <input class="inp" id="movieFolder" placeholder="Output Drive Folder ID">
+
+    <div style="display:flex;gap:10px;margin-top:10px">
+      <div style="flex:1">
+        <div class="label">Clip Duration (সেকেন্ড)</div>
+        <input class="inp" type="number" id="clipDur" value="60" min="10" max="600">
+      </div>
+      <div style="flex:1">
+        <div class="label">Clip Count</div>
+        <input class="inp" type="number" id="clipCount" value="5" min="1" max="50">
+      </div>
+    </div>
+
+    <div class="label" style="margin-top:12px">🎨 Cinematic Color Grade</div>
+    <div class="grade-grid" id="gradeGrid"></div>
+
+    <div class="trow" style="margin-top:8px">
+      <div><div style="font-size:13px;font-weight:600;color:#fff">🎵 Head Bob Effect</div><div class="ts">Dialog এ video উপর-নিচ হবে</div></div>
+      <label class="tog"><input type="checkbox" id="headBobToggle" checked><span class="tslider"></span></label>
+    </div>
+    <div id="headBobSettings" style="margin-top:8px">
+      <div class="label">Intensity</div>
+      <div class="range-row">
+        <span class="range-label">Low</span>
+        <input type="range" id="headBobInt" min="1" max="5" value="2" oninput="document.getElementById('headBobIntVal').textContent=this.value">
+        <span class="range-val" id="headBobIntVal">2</span>
+        <span class="range-label">High</span>
+      </div>
+    </div>
+
+    <div class="label" style="margin-top:12px">🔊 Dialog Volume</div>
+    <div class="range-row">
+      <span class="range-label">0</span>
+      <input type="range" id="dialogVol" min="0" max="2" step="0.1" value="1" oninput="document.getElementById('dialogVolVal').textContent=parseFloat(this.value).toFixed(1)">
+      <span class="range-val" id="dialogVolVal">1.0</span>
+      <span class="range-label">2x</span>
+    </div>
+
+    <div class="label">🎵 Background Music (Drive File ID, ঐচ্ছিক)</div>
+    <input class="inp" id="musicFileId" placeholder="Music Drive File ID">
+    <div class="label">Music Volume</div>
+    <div class="range-row">
+      <span class="range-label">0</span>
+      <input type="range" id="musicVol" min="0" max="2" step="0.1" value="0.5" oninput="document.getElementById('musicVolVal').textContent=parseFloat(this.value).toFixed(1)">
+      <span class="range-val" id="musicVolVal">0.5</span>
+      <span class="range-label">2x</span>
+    </div>
+
+    <button class="btn btn-primary" onclick="startMovie()" id="movieBtn">🎬 Slicer শুরু করো</button>
+
+    <div id="movieProgress" style="display:none;margin-top:12px">
+      <div class="progress-bar"><div class="progress-fill" id="movieFill" style="width:0%"></div></div>
+      <div id="movieStep" style="font-size:12px;color:var(--muted);text-align:center;margin-top:4px"></div>
+    </div>
+    <div id="movieResult" style="margin-top:8px"></div>
   </div>
+</div>
+
+<!-- ============ TAB: TROLL ============ -->
+<div class="tab" id="tab-troll">
   <div class="card">
-    <div class="card-title">ℹ️ Facebook Setup গাইড</div>
-    <div style="font-size:12px;color:#888;line-height:1.8">
-      <div>১. <a href="https://developers.facebook.com" target="_blank" style="color:#4fa3ff">developers.facebook.com</a> এ যাও</div>
-      <div>২. নতুন App বানাও (Business type)</div>
-      <div>৩. Facebook Login product add করো</div>
-      <div>৪. App ID + Secret Railway এ দাও:</div>
-      <div style="background:#0d1117;padding:8px;border-radius:6px;margin:6px 0;font-family:monospace;font-size:11px;color:#06d6a0">FB_APP_ID=your_app_id<br>FB_APP_SECRET=your_secret</div>
-      <div>৫. Facebook Page থাকতে হবে (Personal profile না)</div>
+    <div class="card-title">💀 Troll Edit</div>
+    <div class="trow" style="margin-bottom:12px">
+      <div><div class="tl" style="font-size:14px">Troll Edit চালু</div><div class="ts">Upload এর আগে auto process</div></div>
+      <label class="tog"><input type="checkbox" id="trollToggle" onchange="onTrollToggle()"><span class="tslider"></span></label>
+    </div>
+
+    <div class="label">Text Overlay</div>
+    <input class="inp" id="trollText" value="Wait for it... 💀" oninput="onTrollText(this.value)">
+
+    <div class="label" style="margin-top:10px">🎨 Color Filter</div>
+    <select class="sel" id="trollFilter" onchange="onTrollFilter()">
+      <option value="none">None (original)</option>
+      <option value="teal_orange">🎬 Teal & Orange</option>
+      <option value="moody">🌑 Moody Dark</option>
+      <option value="warm_film">🔥 Warm Film</option>
+      <option value="cold_blue">🧊 Cold Blue</option>
+      <option value="vintage">🎞 Vintage</option>
+      <option value="neon_noir">⚡ Neon Noir</option>
+      <option value="golden_hour">🌅 Golden Hour</option>
+      <option value="dream">✨ Dream</option>
+    </select>
+
+    <div class="trow" style="margin-top:12px">
+      <div><div style="font-size:13px;font-weight:600;color:#fff">🔁 Loop Phonk</div><div class="ts">On = video কাটবে না</div></div>
+      <label class="stog"><input type="checkbox" id="loopToggle" onchange="onLoopToggle()"><span class="sslider"></span></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">💀 Skull Image</div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="skull-preview" id="skullPreview" onclick="document.getElementById('skullInput').click()">
+        <span id="skullEmoji">💀</span>
+      </div>
+      <div>
+        <div style="font-size:13px;color:#fff;margin-bottom:4px">Skull PNG upload করো</div>
+        <div class="hint">Click করো বা drag & drop</div>
+        <div id="skullStatus" style="font-size:11px;color:var(--green);margin-top:4px"></div>
+      </div>
+    </div>
+    <input type="file" id="skullInput" accept="image/*" style="display:none" onchange="uploadSkull(this)">
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎵 Phonk Manager <span class="badge" id="phonkBadge">0</span></div>
+    <div id="phonkList"></div>
+    <hr style="border:none;border-top:1px solid var(--border);margin:12px 0">
+    <div style="font-size:12px;color:#c4b5fd;font-weight:700;margin-bottom:8px">+ নতুন Phonk যোগ করো</div>
+    <div class="label">YouTube Link</div>
+    <input class="inp" id="phonkUrl" placeholder="https://youtube.com/watch?v=...">
+    <div class="label">নাম</div>
+    <input class="inp" id="phonkName" placeholder="Dark Phonk 1">
+    <div class="label">Drop Time (সেকেন্ড) — phonk কত সেকেন্ড থেকে শুরু</div>
+    <input class="inp" type="number" id="phonkDrop" value="0" min="0" step="0.5">
+    <button class="btn btn-primary" onclick="addPhonk()" id="phonkBtn">⬇️ Download & Save</button>
+    <div id="phonkProgress" style="display:none;margin-top:8px">
+      <div class="progress-bar"><div class="progress-fill" id="phonkFill" style="width:50%;animation:pulse 1.5s infinite"></div></div>
+      <div id="phonkStep" style="font-size:11px;color:var(--muted);text-align:center;margin-top:4px">Downloading...</div>
     </div>
   </div>
 </div>
 
-<!-- LOGS TAB -->
+<!-- ============ TAB: DOWNLOAD ============ -->
+<div class="tab" id="tab-dl">
+  <div class="card">
+    <div class="card-title">📥 Single Download → Drive</div>
+    <div class="label">URL (YouTube, Kuaishou, Direct Link...)</div>
+    <input class="inp" id="dlUrl" placeholder="https://...">
+    <div class="label">Drive Folder ID</div>
+    <input class="inp" id="dlFolder" placeholder="Folder ID (ঐচ্ছিক)">
+    <button class="btn btn-primary" onclick="startSingleDl()" id="dlBtn">⬇️ Download করো</button>
+    <div id="dlStatus" style="font-size:12px;color:var(--muted);margin-top:8px;text-align:center"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📦 Bulk Download → Drive</div>
+    <div class="label">Drive Folder ID</div>
+    <input class="inp" id="bulkFolder" placeholder="Folder ID">
+    <div class="label">Links (এক লাইনে একটা)</div>
+    <textarea class="inp" id="bulkLinks" placeholder="https://www.kuaishou.com/...&#10;https://v.kuaishou.com/...&#10;https://youtube.com/..." rows="6"></textarea>
+    <button class="btn btn-primary" style="background:linear-gradient(135deg,#e8540a,#ff6b35)" onclick="startBulk()" id="bulkBtn">📦 Bulk শুরু করো</button>
+    <div class="progress-bar" id="bulkBar" style="display:none"><div class="progress-fill" id="bulkFill" style="width:0%"></div></div>
+    <div id="bulkStatus" style="font-size:12px;color:var(--muted);margin-top:6px;text-align:center"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">📱 Gallery → Drive (Direct)</div>
+    <div class="hint" style="margin-bottom:10px">Server bypass — সরাসরি browser থেকে Drive এ upload। সবচেয়ে দ্রুত!</div>
+    <div class="label">Drive Folder ID</div>
+    <input class="inp" id="galleryFolder" placeholder="Folder ID">
+    <button class="btn btn-primary" style="background:linear-gradient(135deg,#0f7a4a,#00d4aa);color:#000" onclick="document.getElementById('galleryInput').click()">📱 Gallery থেকে বেছে নাও</button>
+    <input type="file" id="galleryInput" accept="video/*" multiple style="display:none" onchange="startGalleryUpload(this)">
+    <div id="galleryStatus" style="margin-top:10px"></div>
+  </div>
+</div>
+
+<!-- ============ TAB: LOGS ============ -->
 <div class="tab" id="tab-logs">
   <div class="card">
-    <div class="card-title">📋 লগ <button class="btn-sm btn-add" style="margin-left:6px" onclick="loadLogs()">↻</button></div>
+    <div class="card-title">📋 লগ <button class="btn-sm btn-add" style="margin-left:auto" onclick="loadLogs()">↻</button></div>
     <div class="log-box" id="logBox"><p class="log-line">লোড হচ্ছে...</p></div>
   </div>
   <div class="card">
     <div class="card-title">📊 Video Queue</div>
-    <div id="queueInfo" style="font-size:12px;color:#888;min-height:30px"></div>
+    <div id="queueInfo" style="font-size:12px;color:var(--muted)"></div>
     <div style="display:flex;gap:8px;margin-top:8px">
-      <button class="btn-sm btn-danger" onclick="resetQueue()">🗑 সব Reset</button>
-      <button class="btn-sm btn-add" onclick="loadQueue()">↻ Refresh</button>
+      <button class="btn-sm btn-danger" onclick="resetQueue()">🗑 Reset</button>
+      <button class="btn-sm btn-add" onclick="loadQueueInfo()">↻</button>
     </div>
   </div>
 </div>
 
-<div class="bottom-nav">
-  <button class="nav-btn active" onclick="showTab('home',this)"><span>🏠</span><span>হোম</span></button>
-  <button class="nav-btn" onclick="showTab('days',this)"><span>📅</span><span>দিন</span></button>
-  <button class="nav-btn" onclick="showTab('fb',this)"><span>📘</span><span>Facebook</span></button>
-  <button class="nav-btn" onclick="showTab('logs',this)"><span>📋</span><span>লগ</span></button>
+<!-- BOTTOM NAV -->
+<div class="nav">
+  <button class="nb active" onclick="showTab('home',this)"><span class="icon">🏠</span><span>Home</span></button>
+  <button class="nb" onclick="showTab('days',this)"><span class="icon">📅</span><span>Days</span></button>
+  <button class="nb" onclick="showTab('movie',this)"><span class="icon">🎬</span><span>Movie</span></button>
+  <button class="nb" onclick="showTab('troll',this)"><span class="icon">💀</span><span>Troll</span></button>
+  <button class="nb" onclick="showTab('dl',this)"><span class="icon">📥</span><span>Download</span></button>
+  <button class="nb" onclick="showTab('logs',this)"><span class="icon">📋</span><span>Logs</span></button>
 </div>
 
+<style>
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+</style>
+
 <script>
+'use strict';
 const DAYS_EN=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const DAYS_BN=['রবিবার','সোমবার','মঙ্গলবার','বুধবার','বৃহস্পতিবার','শুক্রবার','শনিবার'];
-let config={enabled:false,slots:[],privacy:'public',seoEnabled:true,grokApiKey:'',uploadTarget:'youtube',days:{}};
-let nowTarget='youtube';
+let config={enabled:false,slots:[],privacy:'public',target:'youtube',days:{},troll:{enabled:false,colorFilter:'none',loopAudio:false,textOverlay:'Wait for it... 💀'},movie:{colorGrade:'teal_orange',headBob:true,headBobIntensity:2,clipDuration:60,clipCount:5,dialogVol:1.0,musicVol:0.5}};
+let selectedGrade='teal_orange';
+let trollTextTimer=null, movieJobId=null, moviePollInterval=null;
 
-function showTab(n,btn){
+// ===== TAB =====
+function showTab(name,btn){
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('tab-'+n).classList.add('active');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
   btn.classList.add('active');
-  if(n==='logs'){loadLogs();loadQueue();}
-  if(n==='days') renderDays();
-  if(n==='fb') loadFBPages();
+  if(name==='logs'){loadLogs();loadQueueInfo();}
+  if(name==='troll'){loadPhonks();checkSkull();}
+  if(name==='days') renderDays();
 }
 
+// ===== STATUS =====
 async function loadStatus(){
   try{
     const d=await(await fetch('/api/status')).json();
     document.getElementById('dDot').className='dot'+(d.drive?' on':'');
     document.getElementById('yDot').className='dot'+(d.youtube?' on':'');
-    document.getElementById('fDot').className='dot'+(d.facebook?' fb-on':'');
-    let info='';
-    if(d.channelName) info+='▶ '+d.channelName+'  ';
-    if(d.fbPageName) info+='📘 '+d.fbPageName;
-    document.getElementById('connInfo').textContent=info;
+    document.getElementById('connInfo').textContent=[d.channelName?'▶ '+d.channelName:''].filter(Boolean).join('  ')||'';
   }catch{}
 }
 
-async function loadCfg(){
+// ===== CONFIG =====
+async function loadConfig(){
   try{
-    const r=await fetch('/api/config/full');
+    const r=await fetch('/api/config');
     config=await r.json();
     document.getElementById('mainToggle').checked=config.enabled;
     document.getElementById('schedSub').textContent=config.enabled?'✅ চালু আছে':'বন্ধ আছে';
     document.getElementById('privacySel').value=config.privacy||'public';
-    document.getElementById('seoToggle').checked=config.seoEnabled!==false;
-    if(config.grokApiKey) document.getElementById('grokKey').value=config.grokApiKey;
-    setTarget(config.uploadTarget||'youtube');
-    setNowTarget(config.uploadTarget||'youtube');
+    // Troll
+    const tc=config.troll||{};
+    document.getElementById('trollToggle').checked=tc.enabled||false;
+    document.getElementById('trollText').value=tc.textOverlay||'Wait for it... 💀';
+    document.getElementById('trollFilter').value=tc.colorFilter||'none';
+    document.getElementById('loopToggle').checked=tc.loopAudio||false;
+    // Movie
+    const mc=config.movie||{};
+    document.getElementById('clipDur').value=mc.clipDuration||60;
+    document.getElementById('clipCount').value=mc.clipCount||5;
+    document.getElementById('headBobToggle').checked=mc.headBob!==false;
+    document.getElementById('headBobInt').value=mc.headBobIntensity||2;
+    document.getElementById('headBobIntVal').textContent=mc.headBobIntensity||2;
+    document.getElementById('dialogVol').value=mc.dialogVol||1;
+    document.getElementById('dialogVolVal').textContent=(mc.dialogVol||1).toFixed(1);
+    document.getElementById('musicVol').value=mc.musicVol||0.5;
+    document.getElementById('musicVolVal').textContent=(mc.musicVol||0.5).toFixed(1);
+    selectedGrade=mc.colorGrade||'teal_orange';
+    renderGradeGrid();
     renderSlots();
     renderDays();
   }catch{}
 }
-
-async function saveCfg(){
+async function saveConfig(){
   await fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(config)});
 }
+function onMainToggle(){config.enabled=document.getElementById('mainToggle').checked;document.getElementById('schedSub').textContent=config.enabled?'✅ চালু আছে':'বন্ধ আছে';saveConfig();}
+function onPrivacy(){config.privacy=document.getElementById('privacySel').value;saveConfig();}
 
-function toggleSched(){
-  config.enabled=document.getElementById('mainToggle').checked;
-  document.getElementById('schedSub').textContent=config.enabled?'✅ চালু আছে':'বন্ধ আছে';
-  saveCfg();
-}
-function onPrivacyChange(){config.privacy=document.getElementById('privacySel').value;saveCfg();}
-function onSEOToggle(){config.seoEnabled=document.getElementById('seoToggle').checked;saveCfg();}
-function onGrokKey(v){config.grokApiKey=v;saveCfg();}
-
-function setTarget(t){
-  config.uploadTarget=t;
-  ['youtube','facebook','both'].forEach(k=>{
-    const el=document.getElementById('tgt-'+k);
-    el.className='target-btn'+(t===k?' active-'+(k==='both'?'both':k==='facebook'?'fb':'yt'):'');
-  });
-  saveCfg();
-}
-function setNowTarget(t){
-  nowTarget=t;
-  ['youtube','facebook','both'].forEach(k=>{
-    const el=document.getElementById('now-'+k);
-    if(!el) return;
-    el.className='target-btn'+(t===k?' active-'+(k==='both'?'both':k==='facebook'?'fb':'yt'):'');
-  });
-}
-
-// SLOTS
+// ===== SLOTS =====
 function renderSlots(){
-  const list=document.getElementById('slotsList');
   const slots=config.slots||[];
   document.getElementById('slotBadge').textContent=slots.length;
-  if(!slots.length){list.innerHTML='<p style="color:#555;font-size:12px;text-align:center;padding:8px">কোনো সময় নেই</p>';return;}
+  const list=document.getElementById('slotList');
+  if(!slots.length){list.innerHTML='<p style="color:var(--muted);font-size:12px;text-align:center;padding:8px">সময় নেই</p>';return;}
   list.innerHTML=slots.map((s,i)=>{
-    const [h,m]=s.time.split(':').map(Number);
+    const[h,m]=s.time.split(':').map(Number);
     const ap=h<6?'ভোর':h<12?'সকাল':h<15?'দুপুর':h<18?'বিকাল':h<21?'সন্ধ্যা':'রাত';
     return`<div class="slot-item">
       <span class="slot-time">${s.time}</span>
-      <span class="slot-ampm">${ap}</span>
-      <label class="s-toggle"><input type="checkbox" ${s.enabled?'checked':''} onchange="toggleSlot(${i},this.checked)"><span class="s-slider"></span></label>
+      <span style="flex:1;font-size:11px;color:var(--muted)">${ap}</span>
+      <label class="stog"><input type="checkbox" ${s.enabled?'checked':''} onchange="toggleSlot(${i},this.checked)"><span class="sslider"></span></label>
       <button class="btn-sm btn-danger" style="padding:4px 8px" onclick="removeSlot(${i})">✕</button>
     </div>`;
   }).join('');
 }
-function addSlot(){
-  const t=document.getElementById('newTime').value;
-  if(!t) return;
-  if(!config.slots) config.slots=[];
-  if(config.slots.find(s=>s.time===t)){alert('এই সময় আছে');return;}
-  config.slots.push({time:t,enabled:true});
-  config.slots.sort((a,b)=>a.time.localeCompare(b.time));
-  saveCfg(); renderSlots();
-}
-function removeSlot(i){config.slots.splice(i,1);saveCfg();renderSlots();}
-function toggleSlot(i,v){config.slots[i].enabled=v;saveCfg();}
+function addSlot(){const t=document.getElementById('newTime').value;if(!t)return;if(!config.slots)config.slots=[];if(config.slots.find(s=>s.time===t)){alert('এই সময় আছে');return;}config.slots.push({time:t,enabled:true});config.slots.sort((a,b)=>a.time.localeCompare(b.time));saveConfig();renderSlots();}
+function removeSlot(i){config.slots.splice(i,1);saveConfig();renderSlots();}
+function toggleSlot(i,v){config.slots[i].enabled=v;saveConfig();}
 
-// DAYS
+// ===== DAYS =====
 function renderDays(){
   const grid=document.getElementById('dayGrid');
-  if(!grid) return;
+  if(!grid)return;
   const today=new Date().toLocaleDateString('en-US',{weekday:'long',timeZone:'Asia/Dhaka'});
   grid.innerHTML=DAYS_EN.map((day,i)=>{
-    const dc=(config.days||{})[day]||{folderId:'',template:'',enabled:true,uploadTarget:''};
+    const dc=(config.days||{})[day]||{folderId:'',template:'',enabled:true};
     const isToday=day===today;
-    return`<div class="day-card ${isToday?'today-card':''}">
-      <div class="day-header" onclick="toggleDayBody(${i})">
+    return`<div class="day-card ${isToday?'today':''}">
+      <div class="day-hdr" onclick="toggleDay(${i})">
         <div style="display:flex;align-items:center;gap:8px">
           <span class="day-name">${DAYS_BN[i]}</span>
           ${isToday?'<span class="badge">আজ</span>':''}
         </div>
         <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:11px;color:${dc.folderId?'#06d6a0':'#555'}">${dc.folderId?'✅':'⚠️'}</span>
-          <label class="toggle" style="width:40px;height:22px" onclick="event.stopPropagation()">
-            <input type="checkbox" ${dc.enabled?'checked':''} onchange="saveDayCfg('${day}','enabled',this.checked)">
-            <span class="slider"></span>
-          </label>
+          <span style="font-size:11px;color:${dc.folderId?'var(--green)':'var(--muted)'}">${dc.folderId?'✅':'⚠️'}</span>
+          <label class="stog" onclick="event.stopPropagation()"><input type="checkbox" ${dc.enabled?'checked':''} onchange="saveDayCfg('${day}','enabled',this.checked)"><span class="sslider"></span></label>
           <span class="chev" id="chev-${i}">▼</span>
         </div>
       </div>
       <div class="day-body" id="dbody-${i}">
-        <div class="section-label">Drive Folder ID</div>
+        <div class="label">Drive Folder ID</div>
         <input class="inp" value="${dc.folderId||''}" placeholder="Folder ID..." oninput="saveDayCfg('${day}','folderId',this.value)">
-        <div class="section-label">Title Template</div>
-        <input class="inp" value="${dc.template||''}" placeholder="#shorts #viral #waz" oninput="saveDayCfg('${day}','template',this.value)">
-        <div class="section-label">Upload Target (খালি = global default)</div>
-        <select class="sel" onchange="saveDayCfg('${day}','uploadTarget',this.value)">
-          <option value="" ${!dc.uploadTarget?'selected':''}>Global default</option>
-          <option value="youtube" ${dc.uploadTarget==='youtube'?'selected':''}>▶ YouTube</option>
-          <option value="facebook" ${dc.uploadTarget==='facebook'?'selected':''}>📘 Facebook</option>
-          <option value="both" ${dc.uploadTarget==='both'?'selected':''}>🔀 দুইটাই</option>
-        </select>
+        <div class="label">Title Template ({{name}} = file নাম)</div>
+        <input class="inp" value="${dc.template||''}" placeholder="#shorts #viral" oninput="saveDayCfg('${day}','template',this.value)">
         <div style="display:flex;gap:6px;margin-top:10px">
-          <button class="btn-sm btn-run" style="flex:1" onclick="runDay('${day}')">▶ এখনই</button>
+          <button class="btn-sm btn-green" style="flex:1" onclick="runDay('${day}')">▶ এখনই</button>
           <button class="btn-sm btn-add" style="flex:1" onclick="testFolder('${day}')">🔍 Test</button>
         </div>
       </div>
     </div>`;
   }).join('');
 }
-function toggleDayBody(i){
-  const b=document.getElementById('dbody-'+i);
-  const c=document.getElementById('chev-'+i);
-  b.classList.toggle('open');
-  c.classList.toggle('open');
-}
-function saveDayCfg(day,key,val){
-  if(!config.days) config.days={};
-  if(!config.days[day]) config.days[day]={folderId:'',template:'',enabled:true,uploadTarget:''};
-  config.days[day][key]=val;
-  saveCfg();
-}
+function toggleDay(i){const b=document.getElementById('dbody-'+i),c=document.getElementById('chev-'+i);b.classList.toggle('open');c.classList.toggle('open');}
+function saveDayCfg(day,key,val){if(!config.days)config.days={};if(!config.days[day])config.days[day]={folderId:'',template:'',enabled:true};config.days[day][key]=val;saveConfig();}
+async function runDay(day){const dc=(config.days||{})[day]||{};if(!dc.folderId){alert('Folder ID দাও!');return;}const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId,template:dc.template,privacy:config.privacy})});const d=await r.json();d.success?alert('✅ শুরু হয়েছে! লগ দেখো।'):alert('❌ '+d.error);}
+async function testFolder(day){const dc=(config.days||{})[day]||{};if(!dc.folderId){alert('Folder ID দাও!');return;}const r=await fetch('/api/test-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId})});const d=await r.json();d.success?alert(`✅ ${d.count}টি ভিডিও\n\n${d.sample.join('\n')}`):alert('❌ '+d.error);}
 
-async function runDay(day){
-  const dc=(config.days||{})[day]||{};
-  if(!dc.folderId){alert('Folder ID দাও!');return;}
-  const target=dc.uploadTarget||config.uploadTarget||'youtube';
-  const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId,template:dc.template,privacy:config.privacy,target})});
-  const d=await r.json();
-  if(d.success) alert('✅ Upload শুরু! লগ দেখো।');
-  else alert('❌ '+d.error);
-}
-
-async function testFolder(day){
-  const dc=(config.days||{})[day]||{};
-  if(!dc.folderId){alert('Folder ID দাও!');return;}
-  const r=await fetch('/api/test-folder',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId:dc.folderId})});
-  const d=await r.json();
-  if(d.success) alert(`✅ ${d.count}টি ভিডিও\n\n${d.sample.slice(0,3).join('\n')}`);
-  else alert('❌ '+d.error);
-}
-
-// RUN NOW
+// ===== RUN NOW =====
 async function runNow(){
   const folderId=document.getElementById('nowFolder').value.trim();
   const template=document.getElementById('nowTemplate').value.trim();
   if(!folderId){alert('Folder ID দাও!');return;}
   const btn=document.getElementById('runBtn');
   btn.disabled=true;btn.textContent='⏳ চলছে...';
-  const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId,template,privacy:config.privacy,target:nowTarget})});
+  const r=await fetch('/api/run-now',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({folderId,template,privacy:config.privacy})});
   const d=await r.json();
-  btn.disabled=false;btn.textContent='🚀 এখনই আপলোড করো';
-  if(d.success) alert('✅ Upload শুরু! লগ ট্যাবে দেখো।');
-  else alert('❌ '+d.error);
+  btn.disabled=false;btn.textContent='🚀 Upload শুরু করো';
+  d.success?alert('✅ শুরু! লগ ট্যাবে দেখো।'):alert('❌ '+d.error);
 }
 
-// LOGS
+// ===== TROLL =====
+function onTrollToggle(){if(!config.troll)config.troll={};config.troll.enabled=document.getElementById('trollToggle').checked;saveConfig();}
+function onTrollFilter(){if(!config.troll)config.troll={};config.troll.colorFilter=document.getElementById('trollFilter').value;saveConfig();}
+function onLoopToggle(){if(!config.troll)config.troll={};config.troll.loopAudio=document.getElementById('loopToggle').checked;saveConfig();}
+function onTrollText(v){if(!config.troll)config.troll={};config.troll.textOverlay=v;clearTimeout(trollTextTimer);trollTextTimer=setTimeout(saveConfig,700);}
+
+// Skull
+async function checkSkull(){
+  const r=await(await fetch('/api/skull/exists')).json();
+  if(r.exists){document.getElementById('skullPreview').innerHTML='<img src="/assets/skull.png?t='+Date.now()+'">';document.getElementById('skullStatus').textContent='✅ Skull set আছে';}
+}
+async function uploadSkull(input){
+  const file=input.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=async e=>{
+    const base64=e.target.result;
+    const r=await fetch('/api/skull/upload',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({base64})});
+    const d=await r.json();
+    if(d.success){document.getElementById('skullPreview').innerHTML='<img src="/assets/skull.png?t='+Date.now()+'">';document.getElementById('skullStatus').textContent='✅ Upload সম্পন্ন!';}
+    else alert('❌ '+d.error);
+  };
+  reader.readAsDataURL(file);
+}
+
+// Phonk
+async function loadPhonks(){
+  try{
+    const list=await(await fetch('/api/phonk/list')).json();
+    document.getElementById('phonkBadge').textContent=list.length;
+    const div=document.getElementById('phonkList');
+    if(!list.length){div.innerHTML='<p style="color:var(--muted);font-size:12px;text-align:center;padding:8px">Phonk নেই</p>';return;}
+    div.innerHTML=list.map(p=>`<div class="phonk-item">
+      <div class="phonk-info"><div class="phonk-name">${p.name}</div><div class="phonk-meta">Drop: ${p.dropTime}s | ${(p.duration||0).toFixed(1)}s</div></div>
+      <button class="btn-sm btn-danger" onclick="deletePhonk('${encodeURIComponent(p.name)}')">✕</button>
+    </div>`).join('');
+  }catch{}
+}
+async function addPhonk(){
+  const url=document.getElementById('phonkUrl').value.trim();
+  const name=document.getElementById('phonkName').value.trim();
+  const drop=parseFloat(document.getElementById('phonkDrop').value)||0;
+  if(!url||!name){alert('URL আর নাম দাও!');return;}
+  const btn=document.getElementById('phonkBtn');
+  btn.disabled=true;
+  document.getElementById('phonkProgress').style.display='block';
+  document.getElementById('phonkStep').textContent='Download শুরু হচ্ছে...';
+  try{
+    const r=await fetch('/api/phonk/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ytUrl:url,name,dropTime:drop})});
+    const d=await r.json();
+    if(!d.success){alert('❌ '+d.error);btn.disabled=false;document.getElementById('phonkProgress').style.display='none';return;}
+    const jobId=d.jobId;
+    const poll=setInterval(async()=>{
+      const s=await(await fetch('/api/phonk/status/'+jobId)).json();
+      document.getElementById('phonkStep').textContent=s.status==='downloading'?'⏳ Downloading...':s.status==='done'?'✅ সম্পন্ন!':'❌ '+s.error;
+      if(s.status==='done'){clearInterval(poll);btn.disabled=false;document.getElementById('phonkProgress').style.display='none';document.getElementById('phonkUrl').value='';document.getElementById('phonkName').value='';loadPhonks();}
+      else if(s.status==='error'){clearInterval(poll);btn.disabled=false;document.getElementById('phonkProgress').style.display='none';alert('❌ '+s.error);}
+    },3000);
+  }catch(e){alert('❌ '+e.message);btn.disabled=false;document.getElementById('phonkProgress').style.display='none';}
+}
+async function deletePhonk(name){if(!confirm(decodeURIComponent(name)+' delete?'))return;await fetch('/api/phonk/'+name,{method:'DELETE'});loadPhonks();}
+
+// ===== MOVIE SLICER =====
+const GRADE_LABELS={'none':'None','teal_orange':'🎬 Teal-Orange','moody':'🌑 Moody','warm_film':'🔥 Warm Film','cold_blue':'🧊 Cold Blue','vintage':'🎞 Vintage','neon_noir':'⚡ Neon Noir','golden_hour':'🌅 Golden','dream':'✨ Dream'};
+function renderGradeGrid(){
+  const grades=Object.keys(GRADE_LABELS);
+  document.getElementById('gradeGrid').innerHTML=grades.map(g=>`<div class="grade-btn ${selectedGrade===g?'active':''}" onclick="selectGrade('${g}')">${GRADE_LABELS[g]||g}</div>`).join('');
+}
+function selectGrade(g){selectedGrade=g;if(!config.movie)config.movie={};config.movie.colorGrade=g;saveConfig();renderGradeGrid();}
+
+async function startMovie(){
+  const url=document.getElementById('movieUrl').value.trim();
+  const folder=document.getElementById('movieFolder').value.trim();
+  const dur=parseInt(document.getElementById('clipDur').value)||60;
+  const cnt=parseInt(document.getElementById('clipCount').value)||5;
+  const headBob=document.getElementById('headBobToggle').checked;
+  const hbInt=parseInt(document.getElementById('headBobInt').value)||2;
+  const dialogVol=parseFloat(document.getElementById('dialogVol').value)||1;
+  const musicId=document.getElementById('musicFileId').value.trim()||null;
+  const musicVol=parseFloat(document.getElementById('musicVol').value)||0.5;
+
+  if(!url){alert('URL বা Drive File ID দাও!');return;}
+
+  const btn=document.getElementById('movieBtn');
+  btn.disabled=true;btn.textContent='⏳ শুরু হচ্ছে...';
+  document.getElementById('movieProgress').style.display='block';
+  document.getElementById('movieResult').innerHTML='';
+
+  // Determine if url is a Drive file ID or URL
+  const isDriveId = !url.startsWith('http') && url.length > 15 && !/\s/.test(url);
+
+  try{
+    const body={clipDuration:dur,clipCount:cnt,colorGrade:selectedGrade,headBob,headBobIntensity:hbInt,dialogVol,musicVol,outputFolderId:folder||null,musicFileId:musicId};
+    if(isDriveId) body.driveFileId=url; else body.url=url;
+
+    const r=await fetch('/api/movie/start',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    if(!d.success){alert('❌ '+d.error);btn.disabled=false;document.getElementById('movieProgress').style.display='none';return;}
+    movieJobId=d.jobId;
+    if(moviePollInterval)clearInterval(moviePollInterval);
+    moviePollInterval=setInterval(pollMovie,2000);
+  }catch(e){alert('❌ '+e.message);btn.disabled=false;document.getElementById('movieProgress').style.display='none';}
+}
+async function pollMovie(){
+  if(!movieJobId)return;
+  try{
+    const s=await(await fetch('/api/movie/status/'+movieJobId)).json();
+    document.getElementById('movieFill').style.width=(s.progress||0)+'%';
+    document.getElementById('movieStep').textContent=s.step||s.status;
+    if(s.status==='done'){
+      clearInterval(moviePollInterval);
+      document.getElementById('movieBtn').disabled=false;document.getElementById('movieBtn').textContent='🎬 Slicer শুরু করো';
+      document.getElementById('movieResult').innerHTML=`<div class="chip chip-ok">✅ ${s.totalClips}টি Clip তৈরি হয়েছে Drive এ</div>`;
+    }else if(s.status==='error'){
+      clearInterval(moviePollInterval);
+      document.getElementById('movieBtn').disabled=false;document.getElementById('movieBtn').textContent='🎬 Slicer শুরু করো';
+      document.getElementById('movieResult').innerHTML=`<div class="chip chip-err">❌ ${s.error}</div>`;
+    }
+  }catch{}
+}
+
+// ===== DOWNLOAD =====
+async function startSingleDl(){
+  const url=document.getElementById('dlUrl').value.trim();
+  const folder=document.getElementById('dlFolder').value.trim()||null;
+  if(!url){alert('URL দাও!');return;}
+  const btn=document.getElementById('dlBtn');btn.disabled=true;btn.textContent='⏳';
+  document.getElementById('dlStatus').textContent='শুরু হচ্ছে...';
+  const r=await fetch('/api/download/single',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url,folderId:folder})});
+  const d=await r.json();
+  if(!d.success){btn.disabled=false;btn.textContent='⬇️ Download করো';document.getElementById('dlStatus').textContent='❌ '+d.error;return;}
+  const jobId=d.jobId;
+  const poll=setInterval(async()=>{
+    const s=await(await fetch('/api/download/status/'+jobId)).json();
+    document.getElementById('dlStatus').textContent=s.status==='done'?'✅ সম্পন্ন!':s.status==='error'?'❌ '+s.error:'⏳ '+s.step;
+    if(s.status==='done'||s.status==='error'){clearInterval(poll);btn.disabled=false;btn.textContent='⬇️ Download করো';}
+  },2000);
+}
+async function startBulk(){
+  const folder=document.getElementById('bulkFolder').value.trim()||null;
+  const raw=document.getElementById('bulkLinks').value.trim();
+  const links=raw.split('\n').map(l=>l.trim()).filter(Boolean);
+  if(!links.length){alert('Links দাও!');return;}
+  const btn=document.getElementById('bulkBtn');btn.disabled=true;btn.textContent='⏳ চলছে...';
+  document.getElementById('bulkBar').style.display='block';
+  document.getElementById('bulkStatus').textContent='শুরু হচ্ছে ('+links.length+'টি)...';
+  const r=await fetch('/api/download/bulk',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({links,folderId:folder})});
+  const d=await r.json();
+  if(!d.success){btn.disabled=false;btn.textContent='📦 Bulk শুরু করো';document.getElementById('bulkStatus').textContent='❌ '+d.error;return;}
+  const jobId=d.jobId;
+  const poll=setInterval(async()=>{
+    const s=await(await fetch('/api/download/status/'+jobId)).json();
+    const pct=Math.round(((s.success||0)+(s.failed||0))/links.length*100);
+    document.getElementById('bulkFill').style.width=pct+'%';
+    document.getElementById('bulkStatus').textContent=`${s.step||''} ✅${s.success||0} ❌${s.failed||0}`;
+    if(s.status==='done'||s.status==='error'){clearInterval(poll);btn.disabled=false;btn.textContent='📦 Bulk শুরু করো';}
+  },3000);
+}
+
+// Gallery Direct Upload
+async function startGalleryUpload(input){
+  const files=Array.from(input.files);
+  if(!files.length)return;
+  const folder=document.getElementById('galleryFolder').value.trim()||null;
+  const status=document.getElementById('galleryStatus');
+  // Get drive token from server
+  const tr=await fetch('/api/drive-token');
+  const td=await tr.json();
+  if(!td.token){status.innerHTML='<span style="color:#fc8181">❌ Drive connect করো</span>';return;}
+  const token=td.token;
+  status.innerHTML='';
+  for(let i=0;i<files.length;i++){
+    const file=files[i];
+    const pct=Math.round((i/files.length)*100);
+    status.innerHTML+=`<div id="gstat-${i}" style="font-size:12px;margin-bottom:4px;color:var(--muted)">⏳ ${file.name}</div>`;
+    try{
+      // Client-side resumable upload directly to Drive API
+      const meta=JSON.stringify({name:file.name,parents:folder?[folder]:[]});
+      const boundary='gallerybnd';
+      const init=await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable',{
+        method:'POST',
+        headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json','X-Upload-Content-Type':file.type||'video/mp4','X-Upload-Content-Length':String(file.size)},
+        body:meta
+      });
+      if(!init.ok)throw new Error('Init failed: '+init.status);
+      const uploadUrl=init.headers.get('location');
+      const up=await fetch(uploadUrl,{method:'PUT',headers:{'Content-Type':file.type||'video/mp4','Content-Length':String(file.size)},body:file});
+      if(!up.ok)throw new Error('Upload failed: '+up.status);
+      document.getElementById('gstat-'+i).innerHTML=`<span style="color:var(--green)">✅ ${file.name}</span>`;
+    }catch(e){document.getElementById('gstat-'+i).innerHTML=`<span style="color:#fc8181">❌ ${file.name}: ${e.message}</span>`;}
+  }
+}
+
+// ===== LOGS =====
 async function loadLogs(){
-  const box=document.getElementById('logBox');
-  try{
-    const d=await(await fetch('/api/logs')).json();
-    if(!d.logs?.length){box.innerHTML='<p class="log-line" style="color:#555">লগ নেই</p>';return;}
-    box.innerHTML=d.logs.map(l=>`<p class="log-line ${l.includes('❌')||l.includes('Error')?'log-err':''}">${l}</p>`).join('');
-  }catch{}
+  try{const d=await(await fetch('/api/logs')).json();const box=document.getElementById('logBox');if(!d.logs?.length){box.innerHTML='<p class="log-line" style="color:var(--muted)">লগ নেই</p>';return;}box.innerHTML=d.logs.map(l=>`<p class="log-line ${l.includes('❌')||l.includes('Error')?'log-err':''}">${l}</p>`).join('');}catch{}
 }
+async function loadQueueInfo(){
+  try{const q=await(await fetch('/api/queue')).json();const div=document.getElementById('queueInfo');const keys=Object.keys(q);if(!keys.length){div.textContent='Queue খালি';return;}div.innerHTML=keys.map(k=>`<div style="margin-bottom:5px;padding:6px;background:#0a0d15;border-radius:6px;border:1px solid var(--border)"><span style="color:var(--accent);font-size:10px">${k.slice(0,25)}...</span><br>বাকি: <b style="color:#fff">${q[k].remaining}</b> | ব্যবহৃত: ${q[k].used}</div>`).join('');}catch{}
+}
+async function resetQueue(){if(!confirm('সব Queue reset?'))return;await fetch('/api/queue/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});alert('✅ Reset হয়েছে');loadQueueInfo();}
 
-// QUEUE
-async function loadQueue(){
-  try{
-    const q=await(await fetch('/api/queue')).json();
-    const div=document.getElementById('queueInfo');
-    const keys=Object.keys(q);
-    if(!keys.length){div.textContent='Queue খালি';return;}
-    div.innerHTML=keys.map(k=>`<div style="margin-bottom:5px;padding:6px;background:#0d1117;border-radius:6px"><span style="color:#7c3aed;font-size:11px">${k.slice(0,25)}...</span><br><span style="color:#fff">বাকি: <b>${q[k].remaining}</b></span> | ব্যবহৃত: ${q[k].used}</div>`).join('');
-  }catch{}
-}
-async function resetQueue(){
-  if(!confirm('সব Queue reset করবেন?')) return;
-  await fetch('/api/queue/reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})});
-  alert('✅ Reset হয়েছে');loadQueue();
-}
-
-// FB PAGES
-async function loadFBPages(){
-  try{
-    const d=await(await fetch('/api/fb/pages')).json();
-    const div=document.getElementById('fbPageList');
-    if(!d.pages?.length){div.innerHTML='<p style="color:#555;font-size:12px;text-align:center">কোনো Page নেই — Connect করো</p>';return;}
-    div.innerHTML=d.pages.map(p=>`
-      <div class="page-item ${p.id===d.selectedId?'selected':''}">
-        <div><div style="font-size:13px;color:#fff">${p.name}</div><div style="font-size:11px;color:#666">ID: ${p.id}</div></div>
-        ${p.id===d.selectedId?'<span style="color:#1877f2;font-size:11px">✅ Selected</span>':'<button class="btn-sm btn-add" onclick="selectPage(\''+p.id+'\')">Select</button>'}
-      </div>`).join('');
-  }catch{}
-}
-async function selectPage(pageId){
-  const r=await fetch('/auth/facebook/select-page',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pageId})});
-  const d=await r.json();
-  if(d.success){alert('✅ '+d.pageName+' selected!');loadFBPages();loadStatus();}
-  else alert('❌ '+d.error);
-}
-
-// OAUTH
+// ===== AUTH =====
 function connectYT(){window.open('/auth/youtube','_blank','width=500,height=600');}
 function connectDrive(){window.open('/auth/drive','_blank','width=500,height=600');}
-function connectFB(){window.open('/auth/facebook','_blank','width=500,height=700');}
 
-// INIT
-loadStatus();loadCfg();
+// ===== INIT =====
+renderGradeGrid();
+loadStatus();
+loadConfig();
 setInterval(loadStatus,30000);
 </script>
 </body>
