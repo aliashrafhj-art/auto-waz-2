@@ -1,0 +1,16 @@
+{
+  "name": "auto-waz-2",
+  "version": "2.0.0",
+  "description": "Auto Waz 2.0 - Drive to YouTube Auto Scheduler",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
